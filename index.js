@@ -5,8 +5,10 @@ const userHandler = require('./routeHandler/userHandler')
 const connectDB = require('./config/db')
 const app = express()
 const port = 4000
+const cors = require('cors')
 
 app.use(express.json())
+app.use(cors())
 dotenv.config()
 
 // connecting mongodb
