@@ -1,6 +1,6 @@
 const express=require('express')
 const { default: mongoose } = require('mongoose')
-const {registerUser, loginUser} = require('../controllers/userController')
+const {registerUser, loginUser, forgotPassword} = require('../controllers/userController')
 const router=express.Router()
 const userSchema=require('../schemas/userSchema')
 const User= new mongoose.model('Users',userSchema)
@@ -12,6 +12,8 @@ router.post('/login',loginUser)
 router.get("/all",checkLogin, async(req,res)=>{
     res.json("check the login middleware")
 })
+
+router.route('/forgotpassword').post(forgotPassword)
 
 
 
