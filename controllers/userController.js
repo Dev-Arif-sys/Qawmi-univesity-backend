@@ -6,6 +6,7 @@ const User = new mongoose.model('User', userSchema)
 const bcrypt = require('bcrypt')
 const generateToken = require('../utilis/generateToken');
 const sendEmail = require('../utilis/sendEmail');
+const crypto=require('crypto')
 
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -85,12 +86,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
     // reset token gen and add to the database
     const resetToken = user.getResetPasswordToken();
-    console.log(resetToken);
-
+   console.log('hello')
+    console.log(resetToken)
     await user.save();
 
     // create reset url
-    const resetUrl = `http://localhost:4000/passwordreset/${resetToken}`;
+    const resetUrl = `http://localhost:4000/user/passwordreset/${resetToken}`;
     // HTML Message
     const message = `
      <h1>You have requested a password reset</h1>
@@ -130,5 +131,48 @@ const forgotPassword = asyncHandler(async (req, res) => {
 })
 
 
-module.exports = { registerUser, loginUser, forgotPassword }
+const resetPassword=asyncHandler(async(req,res)=>{
+  // compare token with crypto
+  const resetPasswordToken = crypto
+  .createHash("sha256")
+  .update(req.params.resetToken)
+  .digest("hex");
+    try{
+      const user = await User.findOne({
+        resetPasswordToken
+        
+      });
+      console.log(req.params.resetToken)
+      console.log(user)
+      console.log(resetPasswordToken)
+      console.log(req.params.resetToken)
+     
+
+      if (!user) {
+        res.status(401).json({
+          error: 'Invalid Token'
+        })
+      }
+
+      user.password = req.body.password;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+
+      await user.save();
+      res.status(201).json({
+        success: true,
+        data: "Password Updated Success",
+        token: user.getSignedJwtToken(),
+      });
+    }catch(err){
+      console.log
+      res.status(401).json({
+      error: 'something wrong,Password can not be changed'
+      })
+    }
+
+})
+
+
+module.exports = { registerUser, loginUser, forgotPassword,resetPassword }
 
