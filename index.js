@@ -22,10 +22,7 @@ app.get('/', async (req, res) => {
     res.send('hello server')
 })
 
-console.log(crypto
-    .createHash("sha256")
-    .update('aff3158ce4efa379c27246ecba4c4682bec27863')
-    .digest("hex"))
+
 app.use('/user', userHandler)
 
 

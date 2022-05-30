@@ -1,6 +1,7 @@
 const  mongoose=require('mongoose')
 const { Schema } = mongoose;
 const crypto=require('crypto');
+const bcrypt = require('bcrypt')
 
 const jwt=require('jsonwebtoken')
 
@@ -18,8 +19,27 @@ const userSchema=mongoose.Schema({
         required:true
     },
     role:{
-        type:String,       
+        type:String, 
+        default:""      
     },
+    profession:{
+       type:String,
+       default:""      
+    },
+    school:{
+        type:String,
+        default:""        
+
+     },
+     gender:{
+         type:String,
+         default:""      
+     },
+     address:{
+         type:String,
+         default:""      
+     },
+     
     resetPasswordExpire:Date,
     resetPasswordToken:String
 
@@ -32,19 +52,15 @@ userSchema.methods.getSignedJwtToken = function () {
   };
 
 
-userSchema.methods.getResetPasswordToken = function () {
-    const resetToken = crypto.randomBytes(20).toString("hex");
+userSchema.methods.getResetPasswordToken =  function () {
+    const resetToken = crypto.randomBytes(20).toString('hex');
   
     
     // Hash token (private key) and save to database
-    const encryptedToken=crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
-    console.log(crypto
-        .createHash("sha256")
-        .update('aff3158ce4efa379c27246ecba4c4682bec27863')
-        .digest("hex"))
+    const encryptedToken=crypto.createHash('sha256').update(resetToken).digest('hex')
+    console.log(resetToken)
+    console.log(encryptedToken)
+   
     this.resetPasswordToken = encryptedToken
   
     // Set token expire date

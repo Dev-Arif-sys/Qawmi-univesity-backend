@@ -6,12 +6,21 @@ const User = new mongoose.model('User', userSchema)
 const bcrypt = require('bcrypt')
 const generateToken = require('../utilis/generateToken');
 const sendEmail = require('../utilis/sendEmail');
-const crypto=require('crypto')
+const crypto = require('crypto')
 
+
+ /****** Register user ********/ 
 
 const registerUser = asyncHandler(async (req, res) => {
-  console.log(req.body)
+  
   try {
+    const user = await User.findOne({ email: req.body.email })
+    console.log(user)
+    if (user) {
+      res.status(200).json({
+        error: 'You are already registered'
+      })
+    }
     const hashedPass = await bcrypt.hash(req.body.password, 10)
     const newUser = await User.create({
       name: req.body.name,
@@ -36,26 +45,44 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 
+
+
+
+
+
+  /****** Login User ********/ 
+
+
+
 const loginUser = asyncHandler(async (req, res) => {
   try {
 
     const user = await User.find({ email: req.body.email })
 
-    if (user && user.length > 0) {
+    if (!user && !user.length > 0) { 
+      res.status(401).json({
+        error: 'Your email is not registered'
+      })
+    }
       const IsUserValid = await bcrypt.compare(req.body.password, user[0].password)
       console.log(user)
-      if (IsUserValid) {
+      if (!IsUserValid) {
 
-        res.status(200).json({
-          name: user[0].name,
-          email: user[0].email,
-          role: user[0].role,
-          message: 'logged in successfully',
-          token: generateToken(user[0]._id),
-
+        res.status(401).json({
+          error: 'Invalid Credentials'
         })
+       
       }
-    }
+
+      res.status(200).json({
+        name: user[0].name,
+        email: user[0].email,
+        role: user[0].role,
+        message: 'logged in successfully',
+        token: generateToken(user[0]._id),
+
+      })
+    
 
   } catch (err) {
     console.log(err)
@@ -67,7 +94,15 @@ const loginUser = asyncHandler(async (req, res) => {
 )
 
 
-// forgot password initialization
+
+
+
+
+
+  /****** Forgot password initialization ********/ 
+
+
+
 const forgotPassword = asyncHandler(async (req, res) => {
 
 
@@ -86,12 +121,13 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
     // reset token gen and add to the database
     const resetToken = user.getResetPasswordToken();
-   console.log('hello')
-    console.log(resetToken)
+    console.log('hello')
+
     await user.save();
 
+
     // create reset url
-    const resetUrl = `http://localhost:4000/user/passwordreset/${resetToken}`;
+    const resetUrl = `http://localhost:3000/user/passwordreset/${resetToken}`;
     // HTML Message
     const message = `
      <h1>You have requested a password reset</h1>
@@ -108,7 +144,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
       res.status(200).json({ success: true, data: "Email Sent" });
     } catch (err) {
-      
+
       console.log(err)
 
       user.resetPasswordToken = undefined;
@@ -131,48 +167,171 @@ const forgotPassword = asyncHandler(async (req, res) => {
 })
 
 
-const resetPassword=asyncHandler(async(req,res)=>{
+
+
+
+
+
+/****** reset Password ********/ 
+
+
+const resetPassword = asyncHandler(async (req, res) => {
   // compare token with crypto
-  const resetPasswordToken = crypto
-  .createHash("sha256")
-  .update(req.params.resetToken)
-  .digest("hex");
-    try{
-      const user = await User.findOne({
-        resetPasswordToken
-        
-      });
-      console.log(req.params.resetToken)
-      console.log(user)
-      console.log(resetPasswordToken)
-      console.log(req.params.resetToken)
-     
+  console.log(typeof (req.params.resetToken))
+  //Hash URL Token
+  const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex')
+  try {
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() }
 
-      if (!user) {
-        res.status(401).json({
-          error: 'Invalid Token'
-        })
-      }
+    });
 
-      user.password = req.body.password;
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpire = undefined;
+    console.log(user)
 
-      await user.save();
-      res.status(201).json({
-        success: true,
-        data: "Password Updated Success",
-        token: user.getSignedJwtToken(),
-      });
-    }catch(err){
-      console.log
+  
+
+
+    if (!user) {
       res.status(401).json({
-      error: 'something wrong,Password can not be changed'
+        error: 'Invalid Token'
       })
     }
+
+    const hashedPass = await bcrypt.hash(req.body.password, 10)
+
+    user.password = hashedPass;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+    res.status(201).json({
+      success: true,
+      data: "Password Updated Success",
+      token: user.getSignedJwtToken(),
+    });
+  } catch (err) {
+    console.log
+    res.status(401).json({
+      error: 'something wrong,Password can not be changed'
+    })
+  }
 
 })
 
 
-module.exports = { registerUser, loginUser, forgotPassword,resetPassword }
+ /****** Update user ********/ 
+
+
+const updateUser=asyncHandler(async(req,res)=>{
+  try{
+    const user = await User.findOne({ email: req.body.email }).select('-password')
+    if(!user){
+      res.status(401).json({
+        error: 'You are not a valid user'
+      })
+    }
+
+    const updatedInfo={
+      "$set":{
+        profession:req.body.profession || user.profession,
+        school:req.body.school || user.school,
+        gender:req.body.gender || user.gender,
+        address:req.body.address || user.address,
+      }
+    }
+   
+
+      await User.updateMany({email:req.body.email},updatedInfo)
+
+    res.status(201).json({
+      success: true,
+      data: " Updated Success", 
+    });
+  }catch(error){
+    console.log(error)
+    res.status(401).json({
+      error: 'Something error, can not update'
+    })
+  }
+})
+
+const getSingleUserInfo=asyncHandler(async(req,res)=>{
+  try{
+    const user = await User.findOne({ email: req.body.email }).select('-password')
+    if(!user){
+      res.status(401).json({
+        error: 'You are not a valid user'
+      })
+    }
+
+   
+
+    res.status(201).json({
+      success: true,
+      data:user, 
+    });
+
+  }catch(error){
+    console.log(error)
+    res.status(401).json({
+      error: 'Something error, can not get user data'
+    })
+  }
+})
+
+const getAllUser=asyncHandler(async(req,res)=>{
+  try{
+    const user = await User.find({}).select('-password')
+    if(!user){
+      res.status(401).json({
+        error: 'You are not a valid user'
+      })
+    }
+
+    res.status(201).json({
+      success: true,
+      data:user, 
+    });
+
+  }catch(error){
+    console.log(error)
+    res.status(401).json({
+      error: 'Something error, can not get user data'
+    })
+  }
+})
+
+
+const deleteUser=asyncHandler(async(req,res)=>{
+  try{
+    const user = await User.findOne({ email: req.body.email }).select('-password')
+    if(!user){
+      res.status(401).json({
+        error: 'You are not a valid user'
+      })
+    }
+    
+
+   const data= await User.deleteOne({email:req.body.email})
+
+    res.status(201).json({
+      success: true,
+      data: data, 
+    });
+
+
+   
+  }catch(error){
+    
+    res.status(401).json({
+      error: 'Something error, can not get user data'
+    })
+
+  }
+})
+
+
+
+module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser }
 
