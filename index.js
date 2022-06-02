@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const userHandler = require('./routeHandler/userHandler')
+const courseHandler=require('./routeHandler/courseHandler')
 const connectDB = require('./config/db')
 const app = express()
 const port = 4000
@@ -24,6 +25,7 @@ app.get('/', async (req, res) => {
 
 
 app.use('/user', userHandler)
+app.use('/course',courseHandler)
 
 
 

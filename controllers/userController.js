@@ -6,7 +6,8 @@ const User = new mongoose.model('User', userSchema)
 const bcrypt = require('bcrypt')
 const generateToken = require('../utilis/generateToken');
 const sendEmail = require('../utilis/sendEmail');
-const crypto = require('crypto')
+const crypto = require('crypto');
+
 
 
  /****** Register user ********/ 
@@ -14,10 +15,11 @@ const crypto = require('crypto')
 const registerUser = asyncHandler(async (req, res) => {
   
   try {
-    const user = await User.findOne({ email: req.body.email })
-    console.log(user)
-    if (user) {
-      res.status(200).json({
+    console.log(req.body)
+    const user = await User.find({ email: req.body.email })
+    console.log(user )
+    if ( user.length>0) {
+     return  res.status(401).json({
         error: 'You are already registered'
       })
     }
@@ -29,12 +31,16 @@ const registerUser = asyncHandler(async (req, res) => {
       role: req?.body?.role
     })
 
+    
+
     res.status(200).json({
       name: newUser.name,
       email: newUser.email,
       role: newUser.role,
       token: generateToken(newUser._id),
-      message: 'registered successfully'
+      message: 'registered successfully',
+      sessionTime:Date.now(),
+      expireTime: Date.now()  + (30 * 24 * 60 * 60 * 1000)
     })
   } catch (error) {
     console.log(error)
@@ -59,8 +65,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const user = await User.find({ email: req.body.email })
 
-    if (!user && !user.length > 0) { 
-      res.status(401).json({
+    if ( !user.length > 0) { 
+     return res.status(401).json({
         error: 'Your email is not registered'
       })
     }
@@ -109,12 +115,12 @@ const forgotPassword = asyncHandler(async (req, res) => {
   try {
 
 
-    const user = await User.findOne({ email: req.body.email }).select('-password')
+    const user = await User.find({ email: req.body.email }).select('-password')
 
     console.log(user)
 
-    if (!user) {
-      res.status(401).json({
+    if (user.length<=0) {
+     return  res.status(401).json({
         error: 'Your email could not be found'
       })
     }
@@ -207,8 +213,7 @@ const resetPassword = asyncHandler(async (req, res) => {
     await user.save();
     res.status(201).json({
       success: true,
-      data: "Password Updated Success",
-      token: user.getSignedJwtToken(),
+      data: "Password Updated Success"
     });
   } catch (err) {
     console.log
@@ -225,22 +230,23 @@ const resetPassword = asyncHandler(async (req, res) => {
 
 const updateUser=asyncHandler(async(req,res)=>{
   try{
-    const user = await User.findOne({ email: req.body.email }).select('-password')
-    if(!user){
+    const user = await User.find({ email: req.body.email }).select('-password')
+    if(user.length<=0){
       res.status(401).json({
         error: 'You are not a valid user'
       })
     }
 
+
     const updatedInfo={
       "$set":{
-        profession:req.body.profession || user.profession,
-        school:req.body.school || user.school,
-        gender:req.body.gender || user.gender,
-        address:req.body.address || user.address,
+        profession:req.body.profession || user[0].profession,
+        school:req.body.school || user[0].school,
+        gender:req.body.gender || user[0].gender,
+        address:req.body.address || user[0].address,
       }
     }
-   
+   console.log(updatedInfo)
 
       await User.updateMany({email:req.body.email},updatedInfo)
 
@@ -255,6 +261,11 @@ const updateUser=asyncHandler(async(req,res)=>{
     })
   }
 })
+
+
+
+
+  /****** get single info of user********/ 
 
 const getSingleUserInfo=asyncHandler(async(req,res)=>{
   try{
@@ -280,14 +291,17 @@ const getSingleUserInfo=asyncHandler(async(req,res)=>{
   }
 })
 
+
+
+
+
+
+  /****** get all users********/ 
+
 const getAllUser=asyncHandler(async(req,res)=>{
   try{
     const user = await User.find({}).select('-password')
-    if(!user){
-      res.status(401).json({
-        error: 'You are not a valid user'
-      })
-    }
+   
 
     res.status(201).json({
       success: true,
