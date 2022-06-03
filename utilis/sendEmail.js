@@ -2,10 +2,10 @@ const nodemailer = require("nodemailer");
 
 const sendEmail = (options) => {
   const transporter = nodemailer.createTransport({
-    service: 'SendGrid',
+    service: process.env.Email_Service,
     auth: {
-      user: 'apikey',
-      pass: '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',
+      user:process.env.Email_User,
+      pass: process.env.Email_Pass,
     },
   });
 
