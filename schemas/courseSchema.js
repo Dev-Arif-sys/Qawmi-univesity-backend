@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 
 
 const courseSchema=mongoose.Schema({
+    _id: { type: mongoose.Types.ObjectId},
     title: {
         type:String,
         required:"true"
