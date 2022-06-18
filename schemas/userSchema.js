@@ -48,7 +48,7 @@ const userSchema=mongoose.Schema({
 
 
 
-userSchema.methods.getResetPasswordToken =  function () {
+userSchema.methods.getResetPasswordToken =   () =>{
     const resetToken = crypto.randomBytes(20).toString('hex');
   
     

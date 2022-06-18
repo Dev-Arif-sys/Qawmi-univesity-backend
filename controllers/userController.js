@@ -115,7 +115,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   try {
 
 
-    const user = await User.find({ email: req.body.email }).select('-password')
+    const user = await User.findOne({ email: req.body.email }).select('-password')
 
     console.log(user)
 
