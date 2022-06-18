@@ -8,6 +8,7 @@ const Course = new mongoose.model('Course', courseSchema)
 
 const createCourse=asyncHandler(async(req,res)=>{
     try{
+      console.log(req.body)
         const newCourse= await Course.create({
             ...req.body
         })
@@ -19,6 +20,7 @@ const createCourse=asyncHandler(async(req,res)=>{
           })
 
     }catch(error){
+      console.log(error)
         res.status(500).json({
             error: 'something wrong, cannot create course'
           })
