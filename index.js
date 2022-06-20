@@ -7,6 +7,7 @@ const userHandler = require('./routeHandler/userHandler');
 const courseHandler = require('./routeHandler/courseHandler');
 const bookHandler = require('./routeHandler/bookHandler');
 const classRoomHandler = require('./routeHandler/classRoomHandler');
+const comingSoonHandler = require('./routeHandler/comingSoonHandler');
 
 /* DB connection and middleware and cors */
 const connectDB = require('./config/db');
@@ -23,13 +24,14 @@ dotenv.config();
 connectDB();
 
 app.get('/', async (req, res) => {
-  res.send('hello server');
+  res.send('Qawmi primary server is running');
 });
 
 app.use('/user', userHandler);
 app.use('/course', courseHandler);
 app.use('/book', bookHandler);
 app.use('/classRoom', classRoomHandler);
+app.use('/comingSoon', comingSoonHandler);
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
