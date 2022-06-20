@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 
 
 const courseSchema=mongoose.Schema({
+    
    
     title: {
         type:String,

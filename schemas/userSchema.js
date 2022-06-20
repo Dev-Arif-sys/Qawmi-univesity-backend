@@ -39,6 +39,18 @@ const userSchema=mongoose.Schema({
          type:String,
          default:""      
      },
+     StudentId:String,
+     TeacherId:String,
+     courseData:[
+        {
+            
+            courseName:String,
+            CourseInfo:[
+                
+            ]
+        }
+       
+     ],
      
     resetPasswordExpire:Date,
     resetPasswordToken:String
