@@ -1,9 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+
+/* import handler */
 const userHandler = require('./routeHandler/userHandler');
 const courseHandler = require('./routeHandler/courseHandler');
 const bookHandler = require('./routeHandler/bookHandler');
+const classRoomHandler = require('./routeHandler/classRoomHandler');
+
+/* DB connection and middleware and cors */
 const connectDB = require('./config/db');
 const app = express();
 const port = 4000;
@@ -24,6 +29,7 @@ app.get('/', async (req, res) => {
 app.use('/user', userHandler);
 app.use('/course', courseHandler);
 app.use('/book', bookHandler);
+app.use('/classRoom', classRoomHandler);
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
