@@ -265,6 +265,8 @@ const updateUser=asyncHandler(async(req,res)=>{
 const updateRole=asyncHandler(async(req,res)=>{
   try{
     const user = await User.find({ email: req.body.email }).select('-password')
+
+    console.log(user)
     if(user.length<=0){
       res.status(401).json({
         error: 'the email is not registered'
@@ -274,7 +276,8 @@ const updateRole=asyncHandler(async(req,res)=>{
 
     const updatedInfo={
       "$set":{
-        role:req.body.role || user[0].role,       
+        role:req.body.role || user[0].role,
+        purchasedCourse:[{courseId:req.body.courseId},...user[0]?.purchasedCourse,] || user[0]?.purchasedCourse       
       }
     }
    console.log(updatedInfo)

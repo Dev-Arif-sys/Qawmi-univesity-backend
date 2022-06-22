@@ -41,13 +41,11 @@ const userSchema=mongoose.Schema({
      },
      StudentId:String,
      TeacherId:String,
-     courseData:[
+     purchasedCourse:[
         {
             
-            courseName:String,
-            CourseInfo:[
-                
-            ]
+            courseId:String,
+            CourseInfo:Array
         }
        
      ],
