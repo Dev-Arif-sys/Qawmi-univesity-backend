@@ -1,10 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+
+/* import handler */
 const userHandler = require('./routeHandler/userHandler');
 const courseHandler = require('./routeHandler/courseHandler');
 const bookHandler = require('./routeHandler/bookHandler');
 const PopulerSubjectsHandler = require('./routeHandler/PopulerSubjectsHandler');
+const classRoomHandler = require('./routeHandler/classRoomHandler');
+const comingSoonHandler = require('./routeHandler/comingSoonHandler');
+const communityPostHandler = require('./routeHandler/communityPostHandler');
+const categoryHandler = require('./routeHandler/categoryHandler');
+const faqHandler = require('./routeHandler/faqHandler');
+
+/* DB connection and middleware and cors */
 const connectDB = require('./config/db');
 const app = express();
 const port = 4000;
@@ -19,13 +28,18 @@ dotenv.config();
 connectDB();
 
 app.get('/', async (req, res) => {
-  res.send('hello server');
+  res.send('Qawmi primary server is running');
 });
 
 app.use('/user', userHandler);
 app.use('/course', courseHandler);
 app.use('/book', bookHandler);
 app.use('/populersubjects', PopulerSubjectsHandler);
+app.use('/classRoom', classRoomHandler);
+app.use('/comingSoon', comingSoonHandler);
+app.use('/communityPost', communityPostHandler);
+app.use('/category', categoryHandler);
+app.use('/faq', faqHandler);
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {

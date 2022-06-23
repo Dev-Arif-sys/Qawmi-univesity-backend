@@ -262,6 +262,40 @@ const updateUser=asyncHandler(async(req,res)=>{
   }
 })
 
+const updateRole=asyncHandler(async(req,res)=>{
+  try{
+    const user = await User.find({ email: req.body.email }).select('-password')
+
+    console.log(user)
+    if(user.length<=0){
+      res.status(401).json({
+        error: 'the email is not registered'
+      })
+    }
+
+
+    const updatedInfo={
+      "$set":{
+        role:req.body.role || user[0].role,
+        purchasedCourse:[{courseId:req.body.courseId},...user[0]?.purchasedCourse,] || user[0]?.purchasedCourse       
+      }
+    }
+   console.log(updatedInfo)
+
+      await User.updateOne({email:req.body.email},updatedInfo)
+
+    res.status(201).json({
+      success: true,
+      data: " Updated Success", 
+    });
+  }catch(error){
+    console.log(error)
+    res.status(401).json({
+      error: 'Something error, can not update'
+    })
+  }
+})
+
 
 
 
@@ -317,6 +351,7 @@ const getAllUser=asyncHandler(async(req,res)=>{
 })
 
 
+
 const deleteUser=asyncHandler(async(req,res)=>{
   try{
     const user = await User.findOne({ email: req.body.email }).select('-password')
@@ -347,5 +382,5 @@ const deleteUser=asyncHandler(async(req,res)=>{
 
 
 
-module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser }
+module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,updateRole }
 

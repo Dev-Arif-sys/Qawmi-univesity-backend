@@ -2,12 +2,14 @@ const asyncHandler = require('express-async-handler')
 const courseSchema = require('../schemas/courseSchema')
 const mongoose = require('mongoose');
 const Course = new mongoose.model('Course', courseSchema)
+const ObjectId=require('mongodb').ObjectId
 
 
 
 
 const createCourse=asyncHandler(async(req,res)=>{
     try{
+      console.log(req.body)
         const newCourse= await Course.create({
             ...req.body
         })
@@ -19,6 +21,7 @@ const createCourse=asyncHandler(async(req,res)=>{
           })
 
     }catch(error){
+      console.log(error)
         res.status(500).json({
             error: 'something wrong, cannot create course'
           })
@@ -28,11 +31,7 @@ const createCourse=asyncHandler(async(req,res)=>{
 
 const getAllCourse=asyncHandler(async(req,res)=>{
     try{
-      const courses = await Course.find({}).select({
-          description:0,
-        
-           FAQ:0,
-        announcement:0})
+      const courses = await Course.find({}).select(["_id","title","image","lesson","durationHr","level","price","salePrice","rating"])
      
   
       res.status(201).json({
@@ -67,6 +66,39 @@ const getAllCourse=asyncHandler(async(req,res)=>{
         error: 'Something error, can not get user data'
       })
     }
+  })
+
+
+  // get single course
+
+  const getSingleCourse=asyncHandler(async(req,res)=>{
+
+
+    try{
+
+      const id=req.params.id
+      const course=await Course.findOne({_id:ObjectId(id)}).select({
+        'curriculum.lessons.quizes':0,
+        'curriculum.lessons.video':0,
+        'curriculum.lessons.note':0,
+
+      })
+    
+     
+  
+      res.status(201).json({
+        success: true,
+        data:course, 
+      });
+  
+    }catch(error){
+      console.log(error)
+      res.status(401).json({
+        error: 'Something error, can not get user data'
+      })
+    }
+
+
   })
 
 
@@ -182,4 +214,5 @@ const descriptionUpdate=asyncHandler(async(req,res)=>{
 }) 
 
 
-module.exports={createCourse,getAllCourse,curriculumUpdate,faqUpdate,descriptionUpdate,courseUpdate}
+  
+module.exports={createCourse,getAllCourse,curriculumUpdate,faqUpdate,descriptionUpdate,courseUpdate,getSingleCourse}
