@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const userHandler = require('./routeHandler/userHandler');
 const courseHandler = require('./routeHandler/courseHandler');
 const bookHandler = require('./routeHandler/bookHandler');
+const PopulerSubjectsHandler = require('./routeHandler/PopulerSubjectsHandler');
 const connectDB = require('./config/db');
 const app = express();
 const port = 4000;
@@ -24,6 +25,7 @@ app.get('/', async (req, res) => {
 app.use('/user', userHandler);
 app.use('/course', courseHandler);
 app.use('/book', bookHandler);
+app.use('/populersubjects', PopulerSubjectsHandler);
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
