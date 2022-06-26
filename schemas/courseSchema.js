@@ -5,38 +5,36 @@ const { Schema } = mongoose;
 
 
 const courseSchema=mongoose.Schema({
-    _id: { type: mongoose.Types.ObjectId},
+    
+   
     title: {
         type:String,
-        required:"true"
+        
     },
     subTitle:{
         type:String
     },
     image:{
         type:String,
-        required:"true"
+        
     },
     category:{
         type:String,
-        required:"true"
+        
     },
     createdBy:{
         type:String,
-        required:"true"
+       
     },
     lesson:{
         type:Number,
-        required:"true"
+        
     },
     durationHr:{
         type:String,
-        required:"true"
+       
     },
-    durationMt:{
-        type:String,
-        required:"true"
-    },
+  
     certificate:{
         type:Boolean,
         default:false
@@ -52,49 +50,67 @@ const courseSchema=mongoose.Schema({
     },
     level:{
         type:String,
-        required:"true"
+        
     } ,
-   teacherInfo:[
-       {
-           name:String,
-           email:String,
-           avatar:String
-       }
-   ],
+   teacherInfo:Array,
     
-    oldPrice: {
+    salePrice: {
         type:Number,
-        required:true
+        
     },
     price:{
         type:Number,
-        required:true
+       
     },
-   description:{
-       bigDesc:String,
-       reasons:[
-           {
-               reason:String
-           }
-       ]
-   },
+   description:String,
    curriculum:[
-       {
-           moduleName:String,
-           videos:[{
-               title:String,
-               link:String
-           }],
-           status:String
-       }
-   ],
+    {
+        moduleName:String,
+        lessons:[
+            {
+            lessonType:String,
+            title:String,
+            preview:Boolean,
+            video:String,
+            duration:Object,
+            quizes:[{
+                           question:String,
+                             answer:String,
+                             choice:Array
+                            
+                        }],
+            note:String,
+            totalMark:String,
+            passMark:String,
+            deadline:String,
+
+        }
+    ],
+       
+    }
+],
+// Quiz:[
+//     {
+//         Quiz2:[{
+//             question:String,
+//              answer:String,
+//              choices:Array
+            
+//         }],
+       
+//     }
+// ],
    FAQ:[
-       {
+       {   category:String,
            question:String,
            answer:String
        }
    ],
-   announcement:String
+   announcement:String,
+//    teacher:{
+//     type:mongoose.Types.ObjectId,
+//     ref:'User'
+// }
 
 })
 

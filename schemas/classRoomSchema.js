@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const classRoomSchema = mongoose.Schema({
-  // _id: { type: mongoose.Types.ObjectId },
 
   department: String,
 
   slogan: String,
 
-  accessedStudent: Array,
+  subject: String,
+
+  assignedTeacher: Array,
 
   roomNo: String,
 

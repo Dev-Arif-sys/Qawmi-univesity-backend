@@ -8,7 +8,8 @@ const createbook = asyncHandler(async (req, res) => {
     const newbook = await Book.create({
       ...req.body,
     });
-    console.log(req.body);
+    // await newbook.save();
+    console.log(req.body.author);
     console.log(newbook);
     res.status(200).json({
       success: true,
@@ -28,7 +29,7 @@ const getAllbook = asyncHandler(async (req, res) => {
 
     res.status(201).json({
       success: true,
-      data: book,
+      data: books,
     });
   } catch (error) {
     console.log(error);
