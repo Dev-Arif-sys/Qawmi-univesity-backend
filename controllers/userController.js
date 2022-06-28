@@ -309,9 +309,6 @@ const getSingleUserInfo=asyncHandler(async(req,res)=>{
         error: 'You are not a valid user'
       })
     }
-
-   
-
     res.status(201).json({
       success: true,
       data:user, 
