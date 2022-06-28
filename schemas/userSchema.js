@@ -23,6 +23,7 @@ const userSchema=mongoose.Schema({
         type:String, 
         default:""      
     },
+
     profession:String,
     school:String,
     address:String,
@@ -72,6 +73,15 @@ const userSchema=mongoose.Schema({
         }
        
      ],
+     payment:{},
+     levels:{
+        level1:String,
+        level2:String,
+        level3:String,
+        level4:String,
+        level5:String,
+
+     },
      
     resetPasswordExpire:Date,
     resetPasswordToken:String

@@ -269,8 +269,9 @@ const updateUser=asyncHandler(async(req,res)=>{
 
 const getSingleUserInfo=asyncHandler(async(req,res)=>{
   try{
-    const user = await User.findOne({ email: req.body.email }).select('-password')
-    if(!user){
+    console.log(req.params.email)
+    const user = await User.findOne({ email: req?.params?.email }).select('-password')
+    if(!user.email){
       res.status(401).json({
         error: 'You are not a valid user'
       })
@@ -281,6 +282,29 @@ const getSingleUserInfo=asyncHandler(async(req,res)=>{
     res.status(201).json({
       success: true,
       data:user, 
+    });
+
+  }catch(error){
+    console.log(error)
+    res.status(401).json({
+      error: 'Something error, can not get user data'
+    })
+  }
+})
+
+
+const getManyByFilter=asyncHandler(async(req,res)=>{
+
+  try{
+    console.log(req.body)
+    const users=  await User.find({ email: { $in: req.body.emails } }).select("name email number role")
+   
+
+   
+
+    res.status(201).json({
+      success: true,
+      data:users, 
     });
 
   }catch(error){
@@ -366,5 +390,5 @@ const deleteUser=asyncHandler(async(req,res)=>{
 
 
 
-module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,getUserByRole }
+module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,getUserByRole,getManyByFilter }
 
