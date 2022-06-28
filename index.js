@@ -16,6 +16,7 @@ const blogHandler = require('./routeHandler/BlogsHandler');
 const teacherProfileHandler = require('./routeHandler/teacherProfileHandler');
 const PopulerSubjectsHandler = require('./routeHandler/PopulerSubjectsHandler');
 const notificationHandler = require('./routeHandler/notificationHandler');
+const assignmentHandler = require('./routeHandler/assignmentHandler');
 /* DB connection and middleware and cors */
 const connectDB = require('./config/db');
 const app = express();
@@ -47,6 +48,8 @@ app.use('/api/v1/blogs', blogHandler);
 app.use('/api/v1/teacherProfiles', teacherProfileHandler);
 app.use('/populersubjects', PopulerSubjectsHandler);
 app.use('/notification', notificationHandler);
+app.use('/assignment', assignmentHandler);
+
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
     return next(err);
