@@ -102,5 +102,5 @@ const getClassRoomStudent = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent };
-module.exports = { createClassRoom, getAllClassRoom, classRoomUpdate };
+module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate };
+

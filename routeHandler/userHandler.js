@@ -1,7 +1,7 @@
 const express=require('express')
 const { default: mongoose } = require('mongoose')
 
-const {registerUser, loginUser, forgotPassword, resetPassword, updateUser, getUserInfo, deleteUser, getSingleUserInfo, getAllUser, updateRole,getAssignmentMarks} = require('../controllers/userController')
+const {registerUser, loginUser, forgotPassword, resetPassword, updateUser, getUserInfo, deleteUser, getSingleUserInfo, getAllUser, updateRole,getAssignmentMarks,getManyByFilter,getUserByRole} = require('../controllers/userController')
 const router=express.Router()
 const userSchema=require('../schemas/userSchema')
 const User= new mongoose.model('User',userSchema)
@@ -20,9 +20,6 @@ router.post('/login',loginUser)
 router.route('/forgotpassword').post(forgotPassword)
 router.route("/passwordreset/:resetToken").put(resetPassword);
 
-
-router.route("/teacher").post(addTeacher);
-router.route("/role").put(updateRole)
 router.route("/assignmentMarks").get(getAssignmentMarks)
 
 
