@@ -70,4 +70,37 @@ const classRoomUpdate = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createClassRoom, getAllClassRoom, classRoomUpdate };
+const getClassRoomTeacher = asyncHandler(async (req, res) => {
+  try {
+    const classRoom = await ClassRoom.find({assignedTeacher:{ $all: [req.params.email]}});
+    console.log(classRoom,req.params.email)
+    res.status(201).json({
+      success: true,
+      data: classRoom,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "OPPS ! can't get user data, please contact with author",
+    });
+  }
+});
+
+const getClassRoomStudent = asyncHandler(async (req, res) => {
+  try {
+    const classRoom = await ClassRoom.find({accessedStudent:{ $all: [req.params.email]}});
+    console.log(classRoom,req.params.email)
+    res.status(201).json({
+      success: true,
+      data: classRoom,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "OPPS ! can't get user data, please contact with author",
+    });
+  }
+});
+
+module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate };
+
