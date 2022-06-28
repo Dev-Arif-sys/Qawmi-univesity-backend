@@ -240,19 +240,17 @@ const updateUser=asyncHandler(async(req,res)=>{
 
     const updatedInfo={
       "$set":{
-        profession:req.body.profession || user[0].profession,
-        school:req.body.school || user[0].school,
-        gender:req.body.gender || user[0].gender,
-        address:req.body.address || user[0].address,
+        Course:[{courseId:req.body.courseId},...user[0]?.Course,] || user[0]?.Course,
+        ...req.body       
       }
     }
    console.log(updatedInfo)
 
-      await User.updateMany({email:req.body.email},updatedInfo)
+     const data= await User.updateMany({email:req.body.email},updatedInfo)
 
     res.status(201).json({
       success: true,
-      data: " Updated Success", 
+      data:data 
     });
   }catch(error){
     console.log(error)
@@ -262,39 +260,7 @@ const updateUser=asyncHandler(async(req,res)=>{
   }
 })
 
-const updateRole=asyncHandler(async(req,res)=>{
-  try{
-    const user = await User.find({ email: req.body.email }).select('-password')
 
-    console.log(user)
-    if(user.length<=0){
-      res.status(401).json({
-        error: 'the email is not registered'
-      })
-    }
-
-
-    const updatedInfo={
-      "$set":{
-        role:req.body.role || user[0].role,
-        purchasedCourse:[{courseId:req.body.courseId},...user[0]?.purchasedCourse,] || user[0]?.purchasedCourse       
-      }
-    }
-   console.log(updatedInfo)
-
-      await User.updateOne({email:req.body.email},updatedInfo)
-
-    res.status(201).json({
-      success: true,
-      data: " Updated Success", 
-    });
-  }catch(error){
-    console.log(error)
-    res.status(401).json({
-      error: 'Something error, can not update'
-    })
-  }
-})
 
 
 
@@ -303,8 +269,9 @@ const updateRole=asyncHandler(async(req,res)=>{
 
 const getSingleUserInfo=asyncHandler(async(req,res)=>{
   try{
-    const user = await User.findOne({ email: req.body.email }).select('-password')
-    if(!user){
+    console.log(req.params.email)
+    const user = await User.findOne({ email: req?.params?.email }).select('-password')
+    if(!user.email){
       res.status(401).json({
         error: 'You are not a valid user'
       })
@@ -322,6 +289,52 @@ const getSingleUserInfo=asyncHandler(async(req,res)=>{
   }
 })
 
+
+const getManyByFilter=asyncHandler(async(req,res)=>{
+
+  try{
+    console.log(req.body)
+    const users=  await User.find({ email: { $in: req.body.emails } }).select("name email number role")
+   
+
+   
+
+    res.status(201).json({
+      success: true,
+      data:users, 
+    });
+
+  }catch(error){
+    console.log(error)
+    res.status(401).json({
+      error: 'Something error, can not get user data'
+    })
+  }
+})
+
+
+
+// getting user by role
+const getUserByRole=asyncHandler(async(req,res)=>{
+
+  try{
+    console.log(req.params)
+    const user = await User.find({role:req.params.role}).select('-password')
+   
+
+
+    res.status(201).json({
+      success: true,
+      data:user, 
+    });
+
+  }catch(error){
+    console.log(error)
+    res.status(401).json({
+      error: 'Something error, can not get user data'
+    })
+  }
+})
 
 
 
@@ -351,15 +364,9 @@ const getAllUser=asyncHandler(async(req,res)=>{
 
 const deleteUser=asyncHandler(async(req,res)=>{
   try{
-    const user = await User.findOne({ email: req.body.email }).select('-password')
-    if(!user){
-      res.status(401).json({
-        error: 'You are not a valid user'
-      })
-    }
-    
-
-   const data= await User.deleteOne({email:req.body.email})
+   
+    console.log(req.params)
+   const data= await User.deleteOne({email:req.params.email})
 
     res.status(201).json({
       success: true,
@@ -369,6 +376,7 @@ const deleteUser=asyncHandler(async(req,res)=>{
 
    
   }catch(error){
+    console.log(error)
     
     res.status(401).json({
       error: 'Something error, can not get user data'
@@ -381,6 +389,7 @@ const deleteUser=asyncHandler(async(req,res)=>{
 /* ::::::::::::::::::::::::::::::::::
 Get only assignment field
 ::::::::::::::::::::::::::::::::*/
+
 
   const getAssignmentMarks = asyncHandler(async(req,res)=>{
     try{

@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const jwt=require('jsonwebtoken')
 
 const userSchema=mongoose.Schema({
+    ID:String,
     name:{
         type:String,
         required:true
@@ -22,26 +23,49 @@ const userSchema=mongoose.Schema({
         type:String, 
         default:""      
     },
-    profession:{
-       type:String,
-       default:""      
-    },
-    school:{
-        type:String,
-        default:""        
 
-     },
-     gender:{
-         type:String,
-         default:""      
-     },
-     address:{
-         type:String,
-         default:""      
-     },
-     StudentId:String,
-     TeacherId:String,
-     purchasedCourse:[
+    profession:String,
+    school:String,
+    address:String,
+    fatherName:String,
+    number:String,
+     dob:String,
+     married:String,
+     nationality:String,
+     birthCertificate:String,
+     gender:String,
+     NID:String,
+     passport:String,
+     bio:String,
+     perCountry:String,
+     perDistrict:String,
+     perThana:String,
+     perPostCode:String,
+     perAddressLine:String,
+     currCountry:String,
+     currDistrict:String,
+     currThana:String,
+     currPostCode:String,
+     currAddressLine:String,
+     studiedSchool:String,
+     studiedSubject:String,
+     qual1:String,
+     qual2:String,
+     qual3:String,
+     teachedInstitute:String,
+     teachedSub:String,
+     teachingExperience:String,
+     Department:String,
+     subjectList:String,
+     joiningDate:String,
+     mfsNumber:String,
+     mfsMedium:String,
+     bankName:String,
+     bankAccountName:String,
+     bankAccountNum:String,
+     branchName:String,
+     routingName:String,
+     Course:[
         {
             
             courseId:String,
@@ -49,6 +73,15 @@ const userSchema=mongoose.Schema({
         }
        
      ],
+     payment:{},
+     levels:{
+        level1:String,
+        level2:String,
+        level3:String,
+        level4:String,
+        level5:String,
+
+     },
      
     resetPasswordExpire:Date,
     resetPasswordToken:String,
