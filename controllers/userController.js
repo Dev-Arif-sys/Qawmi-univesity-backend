@@ -378,6 +378,36 @@ const deleteUser=asyncHandler(async(req,res)=>{
 })
 
 
+/* ::::::::::::::::::::::::::::::::::
+Get only assignment field
+::::::::::::::::::::::::::::::::*/
 
-module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,updateRole }
+  const getAssignmentMarks = asyncHandler(async(req,res)=>{
+    try{
+      const user = await User.find({}).select('assignmentMarks')
+      if(!user){
+        res.status(401).json({
+          error: 'Database has no assignment marks'
+        })
+      }
+      res.status(201).json({
+        success: true,
+        data:user, 
+      });
+  
+    }catch(error){
+      console.log(error)
+      res.status(401).json({
+        error: 'Something error, can not get mark data'
+      })
+    }
+  })
+
+/* ::::::::::::::::::::::::::::::::::::::
+Get only single user's assignment field
+:::::::::::::::::::::::::::::::::::::::::*/
+  
+
+
+module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,updateRole,getAssignmentMarks }
 
