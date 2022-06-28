@@ -15,6 +15,7 @@ const classRoomSchema = mongoose.Schema({
   accessedStudent: Array,
 
   image: String,
+  classes:Array,
   video: [
     {
       videoTitle: String,
