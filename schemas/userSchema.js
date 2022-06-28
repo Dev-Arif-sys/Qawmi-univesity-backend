@@ -54,8 +54,14 @@ const userSchema=mongoose.Schema({
     resetPasswordToken:String,
     assignmentMarks:[
         {
-            quiz:Array,
-            question:Array
+            quiz:[{
+                quizMark: Number,
+                quizSubmittedDate: String
+            }],
+            question:[{
+                questionMark: String,
+                questionSubmittedDate: String
+            }]
         }
     ]
 

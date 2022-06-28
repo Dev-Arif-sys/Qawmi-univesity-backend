@@ -426,8 +426,37 @@ const getSingleUserAssignmentMarks = asyncHandler(async(req,res)=>{
     })
   }
 })
+
+/* ::::::::::::::::::::::::::::::::::::::
+Push quiz marks to its user
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushQuizMarks = asyncHandler(async(req,res)=>{
+  try{
+    var quiz = {quizMark: req.body.quizMark, quizSubmittedDate:req.body.quizSubmittedDate};
+    // console.log(quiz);
+    const data= await User.findOne({_id : req.params.id});
+    console.log(data);
+
+    data.quiz.push(quiz);
+    
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+
+  }catch(error){
+    console.log(error)
+    res.status(401).json({
+      error: 'Something error, can not get user data'
+    })
+  }
+});
+
+
   
 
 
-module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,updateRole,getAssignmentMarks ,getSingleUserAssignmentMarks}
+module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,updateRole,getAssignmentMarks ,getSingleUserAssignmentMarks, pushQuizMarks}
 
