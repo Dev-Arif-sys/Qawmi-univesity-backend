@@ -1,136 +1,107 @@
+const asyncHandler = require("express-async-handler");
+const userSchema = require("../schemas/userSchema");
+const mongoose = require("mongoose");
+const User = new mongoose.model("User", userSchema);
+const bcrypt = require("bcrypt");
+const generateToken = require("../utilis/generateToken");
+const sendEmail = require("../utilis/sendEmail");
+const crypto = require("crypto");
 
-const asyncHandler = require('express-async-handler')
-const userSchema = require('../schemas/userSchema')
-const mongoose = require('mongoose');
-const User = new mongoose.model('User', userSchema)
-const bcrypt = require('bcrypt')
-const generateToken = require('../utilis/generateToken');
-const sendEmail = require('../utilis/sendEmail');
-const crypto = require('crypto');
-
-
-
- /****** Register user ********/ 
+/****** Register user ********/
 
 const registerUser = asyncHandler(async (req, res) => {
-  
   try {
-    console.log(req.body)
-    const user = await User.find({ email: req.body.email })
-    console.log(user )
-    if ( user.length>0) {
-     return  res.status(401).json({
-        error: 'You are already registered'
-      })
+    console.log(req.body);
+    const user = await User.find({ email: req.body.email });
+    console.log(user);
+    if (user.length > 0) {
+      return res.status(401).json({
+        error: "You are already registered",
+      });
     }
-    const hashedPass = await bcrypt.hash(req.body.password, 10)
+    const hashedPass = await bcrypt.hash(req.body.password, 10);
     const newUser = await User.create({
       name: req.body.name,
       email: req.body.email,
       password: hashedPass,
-      role: req?.body?.role
-    })
-
-    
+      role: req?.body?.role,
+    });
 
     res.status(200).json({
       name: newUser.name,
       email: newUser.email,
       role: newUser.role,
       token: generateToken(newUser._id),
-      message: 'registered successfully',
-      sessionTime:Date.now(),
-      expireTime: Date.now()  + (30 * 24 * 60 * 60 * 1000)
-    })
+      message: "registered successfully",
+      sessionTime: Date.now(),
+      expireTime: Date.now() + 30 * 24 * 60 * 60 * 1000,
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).json({
-      error: 'register failed'
-    })
+      error: "register failed",
+    });
   }
-})
+});
 
-
-
-
-
-
-
-  /****** Login User ********/ 
-
-
+/****** Login User ********/
 
 const loginUser = asyncHandler(async (req, res) => {
   try {
+    const user = await User.find({ email: req.body.email });
 
-    const user = await User.find({ email: req.body.email })
-
-    if ( !user.length > 0) { 
-     return res.status(401).json({
-        error: 'Your email is not registered'
-      })
+    if (!user.length > 0) {
+      return res.status(401).json({
+        error: "Your email is not registered",
+      });
     }
-      const IsUserValid = await bcrypt.compare(req.body.password, user[0].password)
-      console.log(user)
-      if (!IsUserValid) {
+    const IsUserValid = await bcrypt.compare(
+      req.body.password,
+      user[0].password
+    );
+    console.log(user);
+    if (!IsUserValid) {
+      res.status(401).json({
+        error: "Invalid Credentials",
+      });
+    }
 
-        res.status(401).json({
-          error: 'Invalid Credentials'
-        })
-       
-      }
-
-      res.status(200).json({
-        name: user[0].name,
-        email: user[0].email,
-        role: user[0].role,
-        message: 'logged in successfully',
-        token: generateToken(user[0]._id),
-
-      })
-    
-
+    res.status(200).json({
+      name: user[0].name,
+      email: user[0].email,
+      role: user[0].role,
+      message: "logged in successfully",
+      token: generateToken(user[0]._id),
+    });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(401).json({
-      error: 'login failed'
-    })
+      error: "login failed",
+    });
   }
-}
-)
+});
 
-
-
-
-
-
-
-  /****** Forgot password initialization ********/ 
-
-
+/****** Forgot password initialization ********/
 
 const forgotPassword = asyncHandler(async (req, res) => {
-
-
   try {
+    const user = await User.findOne({ email: req.body.email }).select(
+      "-password"
+    );
 
+    console.log(user);
 
-    const user = await User.findOne({ email: req.body.email }).select('-password')
-
-    console.log(user)
-
-    if (user.length<=0) {
-     return  res.status(401).json({
-        error: 'Your email could not be found'
-      })
+    if (user.length <= 0) {
+      return res.status(401).json({
+        error: "Your email could not be found",
+      });
     }
 
     // reset token gen and add to the database
     const resetToken = user.getResetPasswordToken();
-    console.log('hello')
+    console.log("hello");
 
     await user.save();
-
 
     // create reset url
     const resetUrl = `http://localhost:3000/user/passwordreset/${resetToken}`;
@@ -150,8 +121,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
       res.status(200).json({ success: true, data: "Email Sent" });
     } catch (err) {
-
-      console.log(err)
+      console.log(err);
 
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
@@ -159,52 +129,42 @@ const forgotPassword = asyncHandler(async (req, res) => {
       await user.save();
 
       res.status(401).json({
-        error: 'Email could not be sent'
-      })
+        error: "Email could not be sent",
+      });
     }
-
-
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(401).json({
-      error: 'something wrong,try again'
-    })
+      error: "something wrong,try again",
+    });
   }
-})
+});
 
-
-
-
-
-
-
-/****** reset Password ********/ 
-
+/****** reset Password ********/
 
 const resetPassword = asyncHandler(async (req, res) => {
   // compare token with crypto
-  console.log(typeof (req.params.resetToken))
+  console.log(typeof req.params.resetToken);
   //Hash URL Token
-  const resetPasswordToken = crypto.createHash('sha256').update(req.params.resetToken).digest('hex')
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(req.params.resetToken)
+    .digest("hex");
   try {
     const user = await User.findOne({
       resetPasswordToken,
-      resetPasswordExpire: { $gt: Date.now() }
-
+      resetPasswordExpire: { $gt: Date.now() },
     });
 
-    console.log(user)
-
-  
-
+    console.log(user);
 
     if (!user) {
       res.status(401).json({
-        error: 'Invalid Token'
-      })
+        error: "Invalid Token",
+      });
     }
 
-    const hashedPass = await bcrypt.hash(req.body.password, 10)
+    const hashedPass = await bcrypt.hash(req.body.password, 10);
 
     user.password = hashedPass;
     user.resetPasswordToken = undefined;
@@ -213,255 +173,238 @@ const resetPassword = asyncHandler(async (req, res) => {
     await user.save();
     res.status(201).json({
       success: true,
-      data: "Password Updated Success"
+      data: "Password Updated Success",
     });
   } catch (err) {
-    console.log
+    console.log;
     res.status(401).json({
-      error: 'something wrong,Password can not be changed'
-    })
+      error: "something wrong,Password can not be changed",
+    });
   }
+});
 
-})
+/****** Update user ********/
 
-
- /****** Update user ********/ 
-
-
-const updateUser=asyncHandler(async(req,res)=>{
-  try{
-    const user = await User.find({ email: req.body.email }).select('-password')
-    if(user.length<=0){
+const updateUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.find({ email: req.body.email }).select("-password");
+    if (user.length <= 0) {
       res.status(401).json({
-        error: 'You are not a valid user'
-      })
+        error: "You are not a valid user",
+      });
     }
 
+    const updatedInfo = {
+      $set: {
+        Course:
+          [{ courseId: req.body.courseId }, ...user[0]?.Course] ||
+          user[0]?.Course,
+        ...req.body,
+      },
+    };
+    console.log(updatedInfo);
 
-    const updatedInfo={
-      "$set":{
-        Course:[{courseId:req.body.courseId},...user[0]?.Course,] || user[0]?.Course,
-        ...req.body       
-      }
-    }
-   console.log(updatedInfo)
-
-     const data= await User.updateMany({email:req.body.email},updatedInfo)
+    const data = await User.updateMany({ email: req.body.email }, updatedInfo);
 
     res.status(201).json({
       success: true,
-      data:data 
+      data: data,
     });
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
     res.status(401).json({
-      error: 'Something error, can not update'
-    })
+      error: "Something error, can not update",
+    });
   }
-})
+});
 
+/****** get single info of user********/
 
-
-
-
-
-  /****** get single info of user********/ 
-
-const getSingleUserInfo=asyncHandler(async(req,res)=>{
-  try{
-    console.log(req.params.email)
-    const user = await User.findOne({ email: req?.params?.email }).select('-password')
-    if(!user.email){
+const getSingleUserInfo = asyncHandler(async (req, res) => {
+  try {
+    console.log(req.params.email);
+    const user = await User.findOne({ email: req?.params?.email }).select(
+      "-password"
+    );
+    if (!user.email) {
       res.status(401).json({
-        error: 'You are not a valid user'
-      })
+        error: "You are not a valid user",
+      });
     }
     res.status(201).json({
       success: true,
-      data:user, 
+      data: user,
     });
-
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
     res.status(401).json({
-      error: 'Something error, can not get user data'
-    })
+      error: "Something error, can not get user data",
+    });
   }
-})
+});
 
-
-const getManyByFilter=asyncHandler(async(req,res)=>{
-
-  try{
-    console.log(req.body)
-    const users=  await User.find({ email: { $in: req.body.emails } }).select("name email number role")
-   
-
-   
+const getManyByFilter = asyncHandler(async (req, res) => {
+  try {
+    console.log(req.body);
+    const users = await User.find({ email: { $in: req.body.emails } }).select(
+      "name email number role"
+    );
 
     res.status(201).json({
       success: true,
-      data:users, 
+      data: users,
     });
-
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
     res.status(401).json({
-      error: 'Something error, can not get user data'
-    })
+      error: "Something error, can not get user data",
+    });
   }
-})
-
-
+});
 
 // getting user by role
-const getUserByRole=asyncHandler(async(req,res)=>{
-
-  try{
-    console.log(req.params)
-    const user = await User.find({role:req.params.role}).select('-password')
-   
-
+const getUserByRole = asyncHandler(async (req, res) => {
+  try {
+    console.log(req.params);
+    const user = await User.find({ role: req.params.role }).select("-password");
 
     res.status(201).json({
       success: true,
-      data:user, 
+      data: user,
     });
-
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
     res.status(401).json({
-      error: 'Something error, can not get user data'
-    })
+      error: "Something error, can not get user data",
+    });
   }
-})
+});
 
+/****** get all users********/
 
-
-
-
-  /****** get all users********/ 
-
-const getAllUser=asyncHandler(async(req,res)=>{
-  try{
-    const user = await User.find({}).select('-password')
-   
+const getAllUser = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.find({}).select("-password");
 
     res.status(201).json({
       success: true,
-      data:user, 
+      data: user,
     });
-
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
     res.status(401).json({
-      error: 'Something error, can not get user data'
-    })
+      error: "Something error, can not get user data",
+    });
   }
-})
+});
 
-
-
-const deleteUser=asyncHandler(async(req,res)=>{
-  try{
-   
-    console.log(req.params)
-   const data= await User.deleteOne({email:req.params.email})
+const deleteUser = asyncHandler(async (req, res) => {
+  try {
+    console.log(req.params);
+    const data = await User.deleteOne({ email: req.params.email });
 
     res.status(201).json({
       success: true,
-      data: data, 
+      data: data,
     });
+  } catch (error) {
+    console.log(error);
 
-
-   
-  }catch(error){
-    console.log(error)
-    
     res.status(401).json({
-      error: 'Something error, can not get user data'
-    })
-
+      error: "Something error, can not get user data",
+    });
   }
-})
-
+});
 
 /* ::::::::::::::::::::::::::::::::::
 Get only assignment field
 ::::::::::::::::::::::::::::::::*/
 
-
-  const getAssignmentMarks = asyncHandler(async(req,res)=>{
-    try{
-      const user = await User.find({}).select('assignmentMarks')
-      if(!user){
-        res.status(401).json({
-          error: 'Database has no assignment marks'
-        })
-      }
-      res.status(201).json({
-        success: true,
-        data:user, 
-      });
-  
-    }catch(error){
-      console.log(error)
+const getAssignmentMarks = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.find({}).select("assignmentMarks");
+    if (!user) {
       res.status(401).json({
-        error: 'Something error, can not get mark data'
-      })
+        error: "Database has no assignment marks",
+      });
     }
-  })
+    res.status(201).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get mark data",
+    });
+  }
+});
 
 /* ::::::::::::::::::::::::::::::::::::::
 Get only single user's assignment field
 :::::::::::::::::::::::::::::::::::::::::*/
-const getSingleUserAssignmentMarks = asyncHandler(async(req,res)=>{
-  try{
-    const user = await User.findOne({_id : req.params.id}).select('assignmentMarks')
-    if(!user){
+const getSingleUserAssignmentMarks = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id }).select(
+      "assignmentMarks"
+    );
+    if (!user) {
       res.status(401).json({
-        error: 'Database has no assignment marks'
-      })
+        error: "Database has no assignment marks",
+      });
     }
     res.status(201).json({
       success: true,
-      data:user, 
+      data: user,
     });
-
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
     res.status(401).json({
-      error: 'Something error, can not get mark data'
-    })
+      error: "Something error, can not get mark data",
+    });
   }
-})
+});
 
 /* ::::::::::::::::::::::::::::::::::::::
 Push quiz marks to its user
 :::::::::::::::::::::::::::::::::::::::::*/
-const pushQuizMarks = asyncHandler(async(req,res)=>{
-  try{
-    var quiz = {quizMark: req.body.quizMark, quizSubmittedDate:req.body.quizSubmittedDate};
-    // console.log(quiz);
-    const data= await User.findOne({_id : req.params.id});
-    console.log(data);
+const pushQuizMarks = asyncHandler(async (req, res) => {
+  try {
+    var quiz = {
+      quizMark: req.body.quizMark,
+      totalMark: req.body.totalMark,
+      quizSubmittedDate: req.body.quizSubmittedDate,
+      quizId: req.body.quizId
+    };
 
-    data.quiz.push(quiz);
-    
+    const data = await User.findOne({ email: req.params.email });
+    data.quizMarks.push(quiz);
     data.save();
 
     res.status(201).json({
       success: true,
       data: data,
     });
-
-  }catch(error){
-    console.log(error)
+  } catch (error) {
+    console.log(error);
     res.status(401).json({
-      error: 'Something error, can not get user data'
-    })
+      error: "Something error, can not get user data",
+    });
   }
 });
 
-module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,getAssignmentMarks,getManyByFilter,getUserByRole, getSingleUserAssignmentMarks, pushQuizMarks }
-
+module.exports = {
+  registerUser,
+  loginUser,
+  forgotPassword,
+  resetPassword,
+  updateUser,
+  getSingleUserInfo,
+  deleteUser,
+  getAllUser,
+  getAssignmentMarks,
+  getManyByFilter,
+  getUserByRole,
+  getSingleUserAssignmentMarks,
+  pushQuizMarks,
+};

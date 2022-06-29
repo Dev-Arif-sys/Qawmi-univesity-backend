@@ -21,7 +21,8 @@ router.post('/login',loginUser)
 router.route('/forgotpassword').post(forgotPassword)
 router.route("/passwordreset/:resetToken").put(resetPassword);
 router.route("/assignmentMarks").get(getAssignmentMarks);
-router.route("/assignmentMarks/:id").get(getSingleUserAssignmentMarks).put(pushQuizMarks);
+router.route("/assignmentMarks/:id").get(getSingleUserAssignmentMarks)
+router.route("/quizMarks/:email").put(pushQuizMarks);
 
 
 
