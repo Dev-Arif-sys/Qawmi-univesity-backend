@@ -3,9 +3,6 @@ const { default: mongoose } = require('mongoose')
 
 const {registerUser, loginUser, forgotPassword, resetPassword, updateUser, getUserInfo, deleteUser, getSingleUserInfo, getAllUser,getAssignmentMarks, getSingleUserAssignmentMarks, pushQuizMarks, getManyByFilter,getUserByRole} = require('../controllers/userController')
 
-
-// const {registerUser, loginUser, forgotPassword, resetPassword, updateUser, getUserInfo, deleteUser, getSingleUserInfo, getAllUser, updateRole,getAssignmentMarks,getManyByFilter,getUserByRole} = require('../controllers/userController')
-
 const router=express.Router()
 const userSchema=require('../schemas/userSchema')
 const User= new mongoose.model('User',userSchema)
