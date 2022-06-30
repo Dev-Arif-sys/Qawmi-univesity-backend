@@ -102,5 +102,28 @@ const getClassRoomStudent = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate };
+// Get Single classRoom
+
+const getSingleclassRoom = asyncHandler(async (req, res) => {
+  console.log(req.params.classRoomemail);
+  try {
+    const getSingleclassRoomData = await ClassRoom.find({
+      accessedStudent: { $in: [req.params.classRoomemail] },
+    });
+    // const getSingleclassRoomData = await classRoom.find({
+    //   assignedStudentEmail: [req.params.classRoomemail],
+    // });
+    console.log(getSingleclassRoomData);
+    // findById(
+    //   req.params.classRoomemail
+    // );
+    res.status(200).json(getSingleclassRoomData);
+  } catch (error) {
+    res.status(500).json({
+      message: 'Failed Getting Single classRoom',
+    });
+  }
+});
+
+module.exports = { getSingleclassRoom,createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate };
 
