@@ -37,7 +37,28 @@ const getAllAssignment = asyncHandler(async (req, res) => {
     });
   }
 });
-
+/* ::::::::::::::::::::::::::::::::::::::
+Get only single Assignment based on which classRoom I have accessed
+:::::::::::::::::::::::::::::::::::::::::*/
+const getSingleAssignment = asyncHandler(async (req, res) => {
+  try {
+    const assignment = await AssignmentSchema.find({ classRoomId: req.params.classRoomId });
+    if (!assignment) {
+      res.status(401).json({
+        error: "Database has no assignment marks",
+      });
+    }
+    res.status(201).json({
+      success: true,
+      data: assignment,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get mark data",
+    });
+  }
+});
 /* delete */
 const deleteAssignment = asyncHandler(async (req, res) => {
   try {
@@ -53,4 +74,4 @@ const deleteAssignment = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createAssignment, getAllAssignment, deleteAssignment };
+module.exports = { createAssignment, getAllAssignment, deleteAssignment,getSingleAssignment };

@@ -5,6 +5,8 @@ const assignmentSchema = mongoose.Schema({
 
   courseId: String,
 
+  classRoomId: String,
+
   assignmentType: String,
 
   questionPaper: String,
