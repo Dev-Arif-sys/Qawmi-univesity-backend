@@ -22,6 +22,7 @@ const classRoomSchema = mongoose.Schema({
       email: String,
       name: String,
       videoId: String,
+     
     },
   ],
   // video: {

@@ -124,5 +124,6 @@ const getClassRoomStudent = asyncHandler(async (req, res) => {
   }
 });
 
+
 module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate,getSingleClassroom };
 

@@ -8,7 +8,7 @@ const Notification = new mongoose.model('Notification', notificationsSchema);
 const getSinglenotification = asyncHandler(async (req, res) => {
   console.log(req.params.notificationemail);
   try {
-    const getSinglenotificationData = await Notification.findOne({
+    const getSinglenotificationData = await Notification.find({
       assignedStudentEmail: { $in: [req.params.notificationemail] },
     });
     // const getSinglenotificationData = await Notification.find({
