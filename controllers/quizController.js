@@ -65,5 +65,29 @@ const deleteQuiz = asyncHandler(async (req, res) => {
     });
   }
 });
+/* ::::::::::::::::::::::::::::::::::::::
+Push quiz marks to its user
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushQuizAttendance = asyncHandler(async (req, res) => {
+  try {
+    var newAttendance = {
+      attendEmail: req.body.attendEmail
+    };
 
-module.exports = { createQuiz, getAllQuiz, deleteQuiz,getSingleQuiz };
+    const data = await Quiz.findOne({ _id: req.params.id });
+    data.attendance.push(newAttendance);
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
+module.exports = { createQuiz, getAllQuiz, deleteQuiz,getSingleQuiz,pushQuizAttendance };
