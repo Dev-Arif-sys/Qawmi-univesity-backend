@@ -419,4 +419,3 @@ Get only single user's assignment field
 
 
 module.exports = { registerUser, loginUser, forgotPassword, resetPassword,updateUser,getSingleUserInfo,deleteUser,getAllUser,getAssignmentMarks,getManyByFilter,getUserByRole,updateUser }
-
