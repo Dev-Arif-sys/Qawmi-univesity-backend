@@ -25,6 +25,4 @@ router.route("/assignmentMarks/:id").get(getSingleUserAssignmentMarks)
 router.route("/quizMarks/:email").put(pushQuizMarks).get(getSingleUserQuiz);
 
 
-
-
 module.exports=router
