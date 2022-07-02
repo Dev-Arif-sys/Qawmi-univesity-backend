@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-
 /* import handler */
 const userHandler = require("./routeHandler/userHandler");
 const courseHandler = require("./routeHandler/courseHandler");
@@ -19,6 +18,7 @@ const notificationHandler = require("./routeHandler/notificationHandler");
 const assignmentHandler = require("./routeHandler/assignmentHandler");
 const quizHandler = require("./routeHandler/quizHandler");
 const pricingAddHandler = require("./routeHandler/pricingHandler");
+// const imageHandler = require("./routeHandler/imageHandler");
 /* DB connection and middleware and cors */
 const connectDB = require("./config/db");
 const app = express();
@@ -53,6 +53,8 @@ app.use("/notification", notificationHandler);
 app.use("/assignment", assignmentHandler);
 app.use("/quiz", quizHandler);
 app.use("/pricing", pricingAddHandler);
+// app.use("/img", imageHandler);
+// app.use(require("./routeHandler/imageHandler"));
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
