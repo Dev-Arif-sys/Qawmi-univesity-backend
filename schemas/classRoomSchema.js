@@ -1,8 +1,7 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const classRoomSchema = mongoose.Schema({
-
   department: String,
 
   slogan: String,
@@ -14,9 +13,21 @@ const classRoomSchema = mongoose.Schema({
   roomNo: String,
 
   accessedStudent: Array,
-  
-  image: String,
 
+  image: String,
+  video: [
+    {
+      videoTitle: String,
+      email: String,
+      name: String,
+      videoId: String,
+     
+    },
+  ],
+  // video: {
+  //   type: Array,
+  //   required: [true, 'Please provide Tag of the book'],
+  // },
 });
 
 module.exports = classRoomSchema;
