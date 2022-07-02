@@ -14,8 +14,11 @@ const faqHandler = require("./routeHandler/faqHandler");
 const reviewHandler = require("./routeHandler/testimonialReviewHandler");
 const blogHandler = require("./routeHandler/BlogsHandler");
 const teacherProfileHandler = require("./routeHandler/teacherProfileHandler");
-const PopulerSubjectsHandler = require('./routeHandler/PopulerSubjectsHandler');
-const assignmentHandler = require('./routeHandler/assignmentHandler');
+const PopulerSubjectsHandler = require("./routeHandler/PopulerSubjectsHandler");
+const assignmentHandler = require("./routeHandler/assignmentHandler");
+const pricingtHandler = require("./routeHandler/pricingHandler");
+const userFeedBackHandler = require("./routeHandler/userFeedbackHandler");
+const studentFeedBackHandler = require("./routeHandler/StudentFeedBackHandler");
 /* DB connection and middleware and cors */
 const connectDB = require("./config/db");
 const app = express();
@@ -45,8 +48,11 @@ app.use("/user", userHandler);
 app.use("/api/v1/reviews", reviewHandler);
 app.use("/api/v1/blogs", blogHandler);
 app.use("/api/v1/teacherProfiles", teacherProfileHandler);
-app.use('/populersubjects', PopulerSubjectsHandler);
-app.use('/assignment', assignmentHandler);
+app.use("/populersubjects", PopulerSubjectsHandler);
+app.use("/assignment", assignmentHandler);
+app.use("/pricing", pricingtHandler);
+app.use("/userFeedBack", userFeedBackHandler);
+app.use("/studentFeedBack", studentFeedBackHandler);
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
