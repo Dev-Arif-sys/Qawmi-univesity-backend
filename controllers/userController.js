@@ -365,6 +365,8 @@ const getSingleUserAssignmentMarks = asyncHandler(async (req, res) => {
   }
 });
 
+/* Quiz */
+
 /* ::::::::::::::::::::::::::::::::::::::
 Push quiz marks to its user
 :::::::::::::::::::::::::::::::::::::::::*/
@@ -416,6 +418,37 @@ const getSingleUserQuiz = asyncHandler(async (req, res) => {
   }
 });
 
+/* Question */
+
+/* ::::::::::::::::::::::::::::::::::::::
+Push question marks to its user
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushQuestionMarks = asyncHandler(async (req, res) => {
+  try {
+    var question = {
+      questionMark: req.body.quizMark,
+      totalMark: req.body.totalMark,
+      questionSubmittedDate: req.body.quizSubmittedDate,
+      questionId: req.body.quizId,
+      classRoomId: req.body.classRoomId
+    };
+
+    const data = await User.findOne({ email: req.params.email });
+    data.questionMarks.push(question);
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -431,4 +464,5 @@ module.exports = {
   getSingleUserAssignmentMarks,
   pushQuizMarks,
   getSingleUserQuiz,
+  pushQuestionMarks,
 };

@@ -74,4 +74,33 @@ const deleteAssignment = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createAssignment, getAllAssignment, deleteAssignment,getSingleAssignment };
+/* ::::::::::::::::::::::::::::::::::::::
+Push question answer to that assignment
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushQuestionAnswers = asyncHandler(async (req, res) => {
+  try {
+    var questionAnswer = {
+      studentEmail: req.body.studentEmail,
+      studentName:req.body.studentName,
+      submissionDate: req.body.submissionDate,
+      answer: req.body.answer,
+      file: req.body.file
+    };
+
+    const data = await AssignmentSchema.findOne({ _id: req.params.id });
+    data.assignmentAnswer.push(questionAnswer);
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
+module.exports = { createAssignment, getAllAssignment, deleteAssignment,getSingleAssignment, pushQuestionAnswers };
