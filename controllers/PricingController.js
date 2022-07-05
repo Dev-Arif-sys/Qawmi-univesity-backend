@@ -62,11 +62,12 @@ const updatePricing = asyncHandler(async (req, res) => {
       },
       { new: true }
     );
+    console.log(req.body);
     res.status(200).json({
       message: "Successfully updated",
-      data,
+      data: data,
     });
-    console.log(data);
+    // console.log(data);
   } catch (error) {
     console.log(error);
     res.status(500).json({
