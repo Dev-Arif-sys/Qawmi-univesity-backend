@@ -102,5 +102,30 @@ const pushQuestionAnswers = asyncHandler(async (req, res) => {
     });
   }
 });
+/* ::::::::::::::::::::::::::::::::::::::
+Push attendance to that assignment
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushQuestionAttendance = asyncHandler(async (req, res) => {
+  try {
+    questionId = req.params.questionId;
+    var questionAttendance = {
+      attendEmail: req.body.attendEmail
+    };
 
-module.exports = { createAssignment, getAllAssignment, deleteAssignment,getSingleAssignment, pushQuestionAnswers };
+    const data = await AssignmentSchema.findOne({ _id: questionId });
+    data.attendance.push(questionAttendance);
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
+module.exports = { createAssignment, getAllAssignment, deleteAssignment,getSingleAssignment, pushQuestionAnswers,pushQuestionAttendance };

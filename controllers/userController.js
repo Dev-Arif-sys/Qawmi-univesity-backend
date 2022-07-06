@@ -426,10 +426,10 @@ Push question marks to its user
 const pushQuestionMarks = asyncHandler(async (req, res) => {
   try {
     var question = {
-      questionMark: req.body.quizMark,
+      questionMark: req.body.questionMark,
       totalMark: req.body.totalMark,
-      questionSubmittedDate: req.body.quizSubmittedDate,
-      questionId: req.body.quizId,
+      questionSubmittedDate: req.body.questionSubmittedDate,
+      questionId: req.body.questionId,
       classRoomId: req.body.classRoomId
     };
 
@@ -444,7 +444,7 @@ const pushQuestionMarks = asyncHandler(async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(401).json({
-      error: "Something error, can not get user data",
+      error: "Oppss not",
     });
   }
 });

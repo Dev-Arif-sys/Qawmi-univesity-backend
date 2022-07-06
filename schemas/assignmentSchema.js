@@ -27,7 +27,9 @@ const assignmentSchema = mongoose.Schema({
       answer: String,
       file: String
     }
-  ]
+  ],
+
+  attendance: Array
 
 });
 
