@@ -74,4 +74,58 @@ const deleteAssignment = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { createAssignment, getAllAssignment, deleteAssignment,getSingleAssignment };
+/* ::::::::::::::::::::::::::::::::::::::
+Push question answer to that assignment
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushQuestionAnswers = asyncHandler(async (req, res) => {
+  try {
+    var questionAnswer = {
+      studentEmail: req.body.studentEmail,
+      studentName:req.body.studentName,
+      submissionDate: req.body.submissionDate,
+      answer: req.body.answer,
+      file: req.body.file
+    };
+
+    const data = await AssignmentSchema.findOne({ _id: req.params.id });
+    data.assignmentAnswer.push(questionAnswer);
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+/* ::::::::::::::::::::::::::::::::::::::
+Push attendance to that assignment
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushQuestionAttendance = asyncHandler(async (req, res) => {
+  try {
+    questionId = req.params.questionId;
+    var questionAttendance = {
+      attendEmail: req.body.attendEmail
+    };
+
+    const data = await AssignmentSchema.findOne({ _id: questionId });
+    data.attendance.push(questionAttendance);
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
+module.exports = { createAssignment, getAllAssignment, deleteAssignment,getSingleAssignment, pushQuestionAnswers,pushQuestionAttendance };
