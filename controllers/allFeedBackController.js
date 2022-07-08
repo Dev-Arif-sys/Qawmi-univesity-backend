@@ -1,40 +1,105 @@
 const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
 const Feedback = require("../schemas/allFeedbackSchema");
-
-// post pricing
-const classRoomFeedback = asyncHandler(async (req, res) => {
+const userSchema = require("../schemas/userSchema");
+const User = new mongoose.model("User", userSchema);
+// pust
+const classRoomFeedbackSection = asyncHandler(async (req, res) => {
   try {
-    let classRoomFeedbackData = {
-      concentrationChoiceOption: req.body.concentration,
-      punctualChoiceOption: req.body.punctual,
-      studentFeedbackChoiceOption: req.body.studentFeedback,
-      presentChoiceOption: req.body.present,
-      absentChoiceOption: req.body.absent,
-      marks: req.body.marks,
+    var classRoomFeedbackData = {
+      ...req?.body?.classroomFeedBack,
     };
 
-    const data = await Feedback.find({}).select("classRoomFeedbackData");
-    data.classRoomFeedbackData.push(classRoomFeedbackData);
-    data.save();
+    const data = await Feedback.find({});
+    const updateData = {
+      $set: {
+        classroomFeedBack: [
+          classRoomFeedbackData,
+          ...data[0]?.classroomFeedBack,
+        ],
+      },
+    };
 
+    const result = await Feedback.updateOne(updateData);
+    console.log(data[0]?.classroomFeedBack);
     res.status(201).json({
       success: true,
-      data: data,
+      data: result,
     });
   } catch (error) {
     console.log(error);
     res.status(401).json({
-      error: "Something error, can not get user data",
+      error: "Something error, can not get classRoomFeedBack data",
     });
   }
 });
 
-// Get Al
+// student feedBack
+const studentFeedBackSection = asyncHandler(async (req, res) => {
+  try {
+    var studentFeedBackData = { ...req?.body?.studentFeedBack };
+    // console.log(req.body);
+    const studentFeedBackGetData = await Feedback.find({});
+
+    const studentFeedBackUpdateData = {
+      $set: {
+        studentFeedBack: [
+          studentFeedBackData,
+          ...studentFeedBackGetData[0]?.studentFeedBack,
+        ],
+      },
+    };
+
+    const result = await Feedback.updateOne(studentFeedBackUpdateData);
+
+    res.status(200).json({
+      message: "Student feedback inserted successfully",
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error",
+    });
+  }
+});
+
+// user Feedback
+
+const userFeedBackSection = asyncHandler(async (req, res) => {
+  try {
+    var userFeedBackData = { ...req?.body?.userFeedBack };
+    const userFeedBackGetData = await Feedback.find({});
+    const userFeedBackUpdateData = {
+      $set: {
+        userFeedBack: [
+          userFeedBackData,
+          ...userFeedBackGetData[0]?.userFeedBack,
+        ],
+      },
+    };
+    const result = await Feedback.updateOne(userFeedBackUpdateData);
+    res.status(200).json({
+      message: "user feedback inserted successfully",
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed Getting All Feedback",
+    });
+  }
+});
+
+// Get All Feedback
 
 const getAllFeedback = asyncHandler(async (req, res) => {
   try {
-    const getAllFeedbackData = await Feedback.find({});
+    const user = await User.find({
+      email: req.body.email,
+    }).populate("users");
+    const getAllFeedbackData = await Feedback.find({ user });
     res.status(200).json(getAllFeedbackData);
   } catch (error) {
     res.status(500).json({
@@ -43,4 +108,9 @@ const getAllFeedback = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { classRoomFeedback, getAllFeedback };
+module.exports = {
+  classRoomFeedbackSection,
+  studentFeedBackSection,
+  userFeedBackSection,
+  getAllFeedback,
+};

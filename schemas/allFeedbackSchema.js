@@ -1,29 +1,12 @@
 const mongoose = require("mongoose");
 const allFeedBackSchema = mongoose.Schema({
-  userFeedBack: [
+  userFeedBack: Array,
+  studentFeedBack: Array,
+  classroomFeedBack: Array,
+  users: [
     {
-      userName: String,
-      userEmail: String,
-      userFeedback: String,
-      phoneNumber: String,
-    },
-  ],
-
-  studentFeedBack: [
-    {
-      studentChoiceCategory: String,
-      studentFeedBack: String,
-    },
-  ],
-  classroomFeedBack: [
-    {
-      concentrationChoiceOption: String,
-      punctualChoiceOption: String,
-      studentFeedbackChoiceOption: String,
-      punctualChoiceOption: String,
-      presentChoiceOption: String,
-      absentChoiceOption: String,
-      marks: Number,
+      type: mongoose.Types.ObjectId,
+      ref: "User",
     },
   ],
 });

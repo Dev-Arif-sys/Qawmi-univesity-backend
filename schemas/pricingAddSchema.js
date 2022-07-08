@@ -22,7 +22,7 @@ const pricingAddSchema = mongoose.Schema({
     proPricingDesc: String,
   },
 
-  base: {
+  basic: {
     basicPricingAmount: Number,
     basicPricingFirstFacility: String,
     basicPricingSecondFacility: String,

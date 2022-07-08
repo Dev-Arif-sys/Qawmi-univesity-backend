@@ -55,6 +55,7 @@ app.use("/assignment", assignmentHandler);
 app.use("/quiz", quizHandler);
 app.use("/pricing", pricingAddHandler);
 app.use("/feedback", feedBackHandler);
+
 // app.use("/img", imageHandler);
 // app.use(require("./routeHandler/imageHandler"));
 
