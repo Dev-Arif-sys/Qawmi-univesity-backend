@@ -1,14 +1,42 @@
 const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
+const AWS = require("aws-sdk");
+const config = require("../config/config");
 const Blog = require("../schemas/blogsSchema");
+
+// digital ocean connnection
+const spaces = new AWS.S3({
+  endpoint: new AWS.Endpoint(config.spaces.url),
+  accessKeyId: config.spaces.accessKeyId,
+  secretAccessKey: config.spaces.secretAccessKey,
+});
 
 // Post Blog
 
 const insertBlog = asyncHandler(async (req, res) => {
+  const { file } = req.files;
   try {
-    const newBlog = new Blog(req.body);
-    const savedBlog = await newBlog.save();
-    res.status(200).json(savedBlog);
+    await spaces
+      .putObject({
+        ACL: "public-read",
+        Bucket: config.spaces.blogSpace,
+        Body: file.data,
+        Key: file.name,
+      })
+      .promise();
+    const blogImgUrl = `https://${config.spaces.blogSpace}.${config.spaces.url}/${file.name}`;
+    const blogData = new Blog({
+      blogImg: blogImgUrl,
+      key: file.name,
+      blogTitle: req?.body?.blogTitle,
+      blogAuthorName: req?.body?.blogAuthorName,
+      blogDescription: req?.body?.blogDescription,
+      blogTag: req?.body?.blogTag,
+      blogCategory: req?.body?.blogCategory,
+      publishDate: req?.body?.publishDate,
+    });
+    await blogData.save();
+    return res.status(200).json(blogData);
   } catch (error) {
     res.status(500).json({
       message: "Failed Blog Insert",

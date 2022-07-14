@@ -99,6 +99,7 @@ const getAllFeedback = asyncHandler(async (req, res) => {
     const user = await User.find({
       email: req.body.email,
     }).populate("users");
+    console.log(user);
     const getAllFeedbackData = await Feedback.find({ user });
     res.status(200).json(getAllFeedbackData);
   } catch (error) {

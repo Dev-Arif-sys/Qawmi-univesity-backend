@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const fileUpload = require("express-fileupload");
 /* import handler */
 const userHandler = require("./routeHandler/userHandler");
 const courseHandler = require("./routeHandler/courseHandler");
@@ -19,7 +20,10 @@ const assignmentHandler = require("./routeHandler/assignmentHandler");
 const quizHandler = require("./routeHandler/quizHandler");
 const pricingAddHandler = require("./routeHandler/pricingHandler");
 const feedBackHandler = require("./routeHandler/allFeedBackHandler");
-// const imageHandler = require("./routeHandler/imageHandler");
+const studentClassGuideHandler = require("./routeHandler/studentClassGuideHandler");
+const teacherNoteUploadHandler = require("./routeHandler/teacherNoteHandler");
+
+const imageHandler = require("./routeHandler/imageHandler");
 /* DB connection and middleware and cors */
 const connectDB = require("./config/db");
 const app = express();
@@ -28,6 +32,7 @@ const cors = require("cors");
 const crypto = require("crypto");
 
 app.use(express.json());
+app.use(fileUpload({ tempFileDir: "/temp" }));
 app.use(cors());
 dotenv.config();
 
@@ -55,9 +60,8 @@ app.use("/assignment", assignmentHandler);
 app.use("/quiz", quizHandler);
 app.use("/pricing", pricingAddHandler);
 app.use("/feedback", feedBackHandler);
-
-// app.use("/img", imageHandler);
-// app.use(require("./routeHandler/imageHandler"));
+app.use(studentClassGuideHandler);
+app.use(teacherNoteUploadHandler);
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
