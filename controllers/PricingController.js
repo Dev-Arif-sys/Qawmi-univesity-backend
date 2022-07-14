@@ -52,16 +52,24 @@ const getAllPricing = asyncHandler(async (req, res) => {
 
 // Update Pricing
 const updatePricing = asyncHandler(async (req, res) => {
+  console.log("Hello");
   try {
     const pricingId = req.params.pricingId;
     // const update = {intro[0].introPricingAmount:20 }
+    const getData = await Pricing.findById({ _id: pricingId });
     const data = await Pricing.findByIdAndUpdate(
       { _id: pricingId },
       {
-        $set: req.body,
+        $set: {
+          intro: { ...req?.body?.intro } || getData?.intro,
+          pro: { ...req?.body?.pro } || getData?.pro,
+          basic: { ...req?.body?.basic } || getData?.basic,
+        },
       },
       { new: true }
     );
+
+    // console.log(getData);
     console.log(req.body);
     res.status(200).json({
       message: "Successfully updated",
