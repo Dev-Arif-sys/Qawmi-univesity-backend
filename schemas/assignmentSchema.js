@@ -19,6 +19,18 @@ const assignmentSchema = mongoose.Schema({
   
   file: String,
 
+  assignmentAnswer: [
+    { 
+      studentEmail: String,
+      studentName:String,
+      submissionDate: String,
+      answer: String,
+      file: String
+    }
+  ],
+
+  attendance: Array
+
 });
 
 module.exports = assignmentSchema;
