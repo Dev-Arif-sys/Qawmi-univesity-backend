@@ -62,6 +62,7 @@ app.use("/pricing", pricingAddHandler);
 app.use("/feedback", feedBackHandler);
 app.use(studentClassGuideHandler);
 app.use(teacherNoteUploadHandler);
+app.use(imageHandler);
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {
