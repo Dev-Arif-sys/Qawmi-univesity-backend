@@ -5,6 +5,9 @@ const imageSchema = new Schema({
     type: String,
     required: true,
   },
+  key: {
+    type: String,
+  },
 });
 
 module.exports = model("Image", imageSchema);
