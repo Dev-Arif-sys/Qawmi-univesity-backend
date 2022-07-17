@@ -39,8 +39,8 @@ const Image = require("../schemas/imageScema");
 
 const spaces = new AWS.S3({
   endpoint: new AWS.Endpoint(config.spaces.url),
-  accessKeyId: config.spaces.accessKeyId,
-  secretAccessKey: config.spaces.secretAccessKey,
+  accessKeyId: process.env.ACCESS_KEY,
+  secretAccessKey: process.env.SECRET_KEY,
 });
 
 // router.post("/images", (req, res) => {
@@ -59,6 +59,7 @@ router.post("/images", async (req, res) => {
         Key: file.name,
       })
       .promise();
+
     const fileUrl = `https://${config.spaces.spaceName}.${config.spaces.url}/${file.name}`;
     console.log(test);
     console.log(fileUrl);
