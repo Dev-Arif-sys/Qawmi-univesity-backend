@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 dotenv.config();
 const sgMail = require("@sendgrid/mail");
-const API_KEY = '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';
+const API_KEY = process.env.EMAIL_API_KEY;
 sgMail.setApiKey(API_KEY);
 
 const sendEmail = async (req, res) => {
