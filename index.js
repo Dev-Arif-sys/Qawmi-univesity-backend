@@ -20,6 +20,8 @@ const assignmentHandler = require("./routeHandler/assignmentHandler");
 const quizHandler = require("./routeHandler/quizHandler");
 const pricingAddHandler = require("./routeHandler/pricingHandler");
 const feedBackHandler = require("./routeHandler/allFeedBackHandler");
+const sendMailHandler = require("./routeHandler/sendMailHandler");
+// const imageHandler = require("./routeHandler/imageHandler");
 const studentClassGuideHandler = require("./routeHandler/studentClassGuideHandler");
 const teacherNoteUploadHandler = require("./routeHandler/teacherNoteHandler");
 
@@ -60,6 +62,9 @@ app.use("/assignment", assignmentHandler);
 app.use("/quiz", quizHandler);
 app.use("/pricing", pricingAddHandler);
 app.use("/feedback", feedBackHandler);
+app.use("/mail", sendMailHandler);
+// app.use("/img", imageHandler);
+// app.use(require("./routeHandler/imageHandler"));
 app.use(studentClassGuideHandler);
 app.use(teacherNoteUploadHandler);
 app.use(imageHandler);
