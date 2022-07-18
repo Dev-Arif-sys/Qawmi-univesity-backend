@@ -18,6 +18,7 @@ const PopulerSubjectsHandler = require('./routeHandler/PopulerSubjectsHandler');
 const notificationHandler = require('./routeHandler/notificationHandler');
 const assignmentHandler = require('./routeHandler/assignmentHandler');
 const quizHandler = require('./routeHandler/quizHandler');
+const bkashPaymentRoutes=require('./routeHandler/bkash-handler')
 /* DB connection and middleware and cors */
 const connectDB = require('./config/db');
 const app = express();
@@ -51,6 +52,7 @@ app.use('/populersubjects', PopulerSubjectsHandler);
 app.use('/notification', notificationHandler);
 app.use('/assignment', assignmentHandler);
 app.use('/quiz', quizHandler);
+app.use('/api/bkash-payment', bkashPaymentRoutes);
 
 const errorHandler = (err, req, res, next) => {
   if (res.headersSent) {

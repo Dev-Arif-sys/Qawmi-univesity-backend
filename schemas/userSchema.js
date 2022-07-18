@@ -67,7 +67,7 @@ const userSchema = mongoose.Schema({
   routingName: String,
   Course: [
     {
-      courseId: String,
+      courseId: Schema.Types.ObjectId,
       CourseInfo: Array,
     },
   ],

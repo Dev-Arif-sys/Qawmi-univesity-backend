@@ -96,6 +96,60 @@ const getSingleCourse = asyncHandler(async (req, res) => {
   }
 });
 
+//get single course for student
+const getSingleCourseforStudent = asyncHandler(async (req, res) => {
+  try {
+    const id = req.params.id;
+    const course = await Course.findOne({ _id: ObjectId(id) }).select( [
+      "_id",
+      "title",
+     "curriculum"
+    ])
+
+    res.status(201).json({
+      success: true,
+      data: course,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
+// get many course by filter
+
+const getManyByFilter = asyncHandler(async (req, res) => {
+  try {
+    console.log(req.body);
+    const courses = await Course.find({ "_id": { $in: req.body.courseId.map(id=>mongoose.Types.ObjectId(id.trim())) } }).select(
+      [
+        "_id",
+        "title",
+        "image",
+        "lesson",
+        "durationHr",
+        "level",
+        "price",
+        "salePrice",
+        "rating",
+      ]
+    );
+console.log(courses)
+    res.status(201).json({
+      success: true,
+      data: courses,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
+
 const curriculumUpdate = asyncHandler(async (req, res) => {
   try {
     const v_id = req.body.id.videoId;
@@ -203,4 +257,6 @@ module.exports = {
   descriptionUpdate,
   courseUpdate,
   getSingleCourse,
+  getManyByFilter,
+  getSingleCourseforStudent
 };
