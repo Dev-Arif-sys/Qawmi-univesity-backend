@@ -371,6 +371,8 @@ const getSingleUserAssignmentMarks = asyncHandler(async (req, res) => {
   }
 });
 
+/* Quiz */
+
 /* ::::::::::::::::::::::::::::::::::::::
 Push quiz marks to its user
 :::::::::::::::::::::::::::::::::::::::::*/
@@ -422,6 +424,60 @@ const getSingleUserQuiz = asyncHandler(async (req, res) => {
   }
 });
 
+/* Question */
+
+/* ::::::::::::::::::::::::::::::::::::::
+Push question marks to its user
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushQuestionMarks = asyncHandler(async (req, res) => {
+  try {
+    var question = {
+      questionMark: req.body.questionMark,
+      totalMark: req.body.totalMark,
+      questionSubmittedDate: req.body.questionSubmittedDate,
+      questionId: req.body.questionId,
+      classRoomId: req.body.classRoomId
+    };
+
+    const data = await User.findOne({ email: req.params.email });
+    data.questionMarks.push(question);
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Oppss not",
+    });
+  }
+});
+
+/* ::::::::::::::::::::::::::::::::::::::
+Get only single user's quiz field
+:::::::::::::::::::::::::::::::::::::::::*/
+const getSingleUserQuestionMarks = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.email }).select("questionMarks");
+    if (!user) {
+      res.status(401).json({
+        error: "Database has no assignment marks",
+      });
+    }
+    res.status(201).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get mark data",
+    });
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -437,4 +493,6 @@ module.exports = {
   getSingleUserAssignmentMarks,
   pushQuizMarks,
   getSingleUserQuiz,
+  pushQuestionMarks,
+  getSingleUserQuestionMarks,
 };

@@ -82,10 +82,13 @@ const userSchema = mongoose.Schema({
 
   resetPasswordExpire: Date,
   resetPasswordToken: String,
-  assignmentMarks: [
+  questionMarks: [
     {
-      questionMark: String,
+      questionMark: Number,
+      totalMark: Number,
       questionSubmittedDate: String,
+      questionId: String,
+      classRoomId: String
     },
   ],
   quizMarks: [
@@ -93,7 +96,8 @@ const userSchema = mongoose.Schema({
       quizMark: Number,
       totalMark: Number,
       quizSubmittedDate: String,
-      quizId: String
+      quizId: String,
+      classRoomId: String
     },
   ],
 });
