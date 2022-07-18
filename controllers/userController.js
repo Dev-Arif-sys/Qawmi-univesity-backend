@@ -50,21 +50,18 @@ const loginUser = asyncHandler(async (req, res) => {
   try {
     const user = await User.find({ email: req.body.email });
 
-    if (!user.length > 0) {
-      return res.status(401).json({
-        error: "Your email is not registered",
-      });
-    }
+    // if (!user.length > 0) {
+    //   return res.status(401).json({
+    //     error: "Your email is not registered",
+    //   });
+    // }
     const IsUserValid = await bcrypt.compare(
       req.body.password,
       user[0].password
     );
     console.log(user);
-    if (!IsUserValid) {
-      res.status(401).json({
-        error: "Invalid Credentials",
-      });
-    }
+  
+    
 
     res.status(200).json({
       name: user[0].name,
@@ -183,7 +180,13 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 });
 
+
+
+
+
 /****** Update user ********/
+
+
 
 const updateUser = asyncHandler(async (req, res) => {
   try {
@@ -193,12 +196,15 @@ const updateUser = asyncHandler(async (req, res) => {
         error: "You are not a valid user",
       });
     }
+    console.log(req.body)
 
     const updatedInfo = {
       $set: {
         Course:
           [{ courseId: req.body.courseId }, ...user[0]?.Course] ||
           user[0]?.Course,
+        quizMarks:
+          [{ quizMark:req.body.quizMark, totalMark:req.body.totalMark,quizSubmittedDate:req.body.quizSubmittedDate,quizId:req.body.quizId},...user[0]?.quizMarks]|| user[0]?.quizMarks,
         ...req.body,
       },
     };

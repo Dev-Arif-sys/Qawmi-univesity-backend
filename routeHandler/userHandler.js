@@ -12,7 +12,7 @@ const {checkLogin,admin}=require('../middlewares/checkLogin')
 
 router.route('/').put(updateUser)
 router.route('/single/:email').get(getSingleUserInfo)
-router.route ('/getByFiltered').get(getManyByFilter)
+router.route ('/getByFiltered').put(getManyByFilter)
 router.route('/role/:role').get(getUserByRole)
 router.route('/delete/:email').delete(deleteUser)
 router.route('/all').get(getAllUser)
