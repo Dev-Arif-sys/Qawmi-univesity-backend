@@ -37,17 +37,38 @@ const getAllClassRoom = asyncHandler(async (req, res) => {
     });
   }
 });
+
+const getSingleClassroom=asyncHandler(async (req, res) => {
+ 
+  try {
+    const c_id = req.params.classRoomId;
+    const data = await ClassRoom.findOne({ c_id });
+    
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: 'Something error, can not get  data',
+    });
+  }
+});
 const classRoomUpdate = asyncHandler(async (req, res) => {
   console.log(req.body);
   try {
     const c_id = req.params.classRoomId;
-    const Classtiem = await ClassRoom.findOne({ c_id });
-    console.log(Classtiem);
+    const classItem = await ClassRoom.findOne({ c_id });
+   console.log(classItem)
     const data = await ClassRoom.updateOne(
       { _id: c_id },
       {
         $set: {
-          video: [{ ...req.body }, ...Classtiem.video],
+          video: [{ ...req.body }, ...classItem.video],
+          classes:[{...req.body.class}, ...classItem.classes],
+          ...req.body
         },
       }
       // {
@@ -62,9 +83,10 @@ const classRoomUpdate = asyncHandler(async (req, res) => {
       success: true,
       data: data,
     });
+
   } catch (error) {
     console.log(error);
-    res.status(401).json({
+    res.status(501).json({
       error: 'Something error, can not get  data',
     });
   }
@@ -102,28 +124,6 @@ const getClassRoomStudent = asyncHandler(async (req, res) => {
   }
 });
 
-// Get Single classRoom
 
-const getSingleclassRoom = asyncHandler(async (req, res) => {
-  console.log(req.params.classRoomemail);
-  try {
-    const getSingleclassRoomData = await ClassRoom.find({
-      accessedStudent: { $in: [req.params.classRoomemail] },
-    });
-    // const getSingleclassRoomData = await classRoom.find({
-    //   assignedStudentEmail: [req.params.classRoomemail],
-    // });
-    console.log(getSingleclassRoomData);
-    // findById(
-    //   req.params.classRoomemail
-    // );
-    res.status(200).json(getSingleclassRoomData);
-  } catch (error) {
-    res.status(500).json({
-      message: 'Failed Getting Single classRoom',
-    });
-  }
-});
-
-module.exports = { getSingleclassRoom,createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate };
+module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate,getSingleClassroom };
 
