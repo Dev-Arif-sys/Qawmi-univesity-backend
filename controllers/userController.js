@@ -196,15 +196,20 @@ const updateUser = asyncHandler(async (req, res) => {
         error: "You are not a valid user",
       });
     }
+    const updateBlock={}
+
+    if(req.body.courseId){
+      updateBlock["Course"]= [{ courseId: req.body.courseId }, ...user[0]?.Course]
+    }
+
+    if(req.body.quizMark && req.body.totalMark){
+      updateBlock["quizMarks"]= [{ quizMark:req.body.quizMark, totalMark:req.body.totalMark,quizSubmittedDate:req.body.quizSubmittedDate,quizId:req.body.quizId},...user[0]?.quizMarks]
+    }
     console.log(req.body)
 
     const updatedInfo = {
       $set: {
-        Course:
-          [{ courseId: req.body.courseId }, ...user[0]?.Course] ||
-          user[0]?.Course,
-        quizMarks:
-          [{ quizMark:req.body.quizMark, totalMark:req.body.totalMark,quizSubmittedDate:req.body.quizSubmittedDate,quizId:req.body.quizId},...user[0]?.quizMarks]|| user[0]?.quizMarks,
+        ...updateBlock,
         ...req.body,
       },
     };

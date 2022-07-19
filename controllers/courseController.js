@@ -118,6 +118,24 @@ const getSingleCourseforStudent = asyncHandler(async (req, res) => {
   }
 });
 
+
+const getSingleForAdmin = asyncHandler(async (req, res) => {
+  try {
+    const id = req.params.id;
+    const course = await Course.findOne({ _id: ObjectId(id) })
+
+    res.status(201).json({
+      success: true,
+      data: course,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
 // get many course by filter
 
 const getManyByFilter = asyncHandler(async (req, res) => {
@@ -258,5 +276,6 @@ module.exports = {
   courseUpdate,
   getSingleCourse,
   getManyByFilter,
-  getSingleCourseforStudent
+  getSingleCourseforStudent,
+  getSingleForAdmin
 };
