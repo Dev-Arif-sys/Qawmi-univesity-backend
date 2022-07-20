@@ -1,7 +1,7 @@
-const asyncHandler = require('express-async-handler');
-const classRoomSchema = require('../schemas/classRoomSchema');
-const mongoose = require('mongoose');
-const ClassRoom = new mongoose.model('ClassRoom', classRoomSchema);
+const asyncHandler = require("express-async-handler");
+const classRoomSchema = require("../schemas/classRoomSchema");
+const mongoose = require("mongoose");
+const ClassRoom = new mongoose.model("ClassRoom", classRoomSchema);
 
 const createClassRoom = asyncHandler(async (req, res) => {
   try {
@@ -12,12 +12,12 @@ const createClassRoom = asyncHandler(async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'ClassRoom has been created successfully',
+      message: "ClassRoom has been created successfully",
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
-      error: 'opps ! something went wrong, please try again',
+      error: "opps ! something went wrong, please try again",
     });
   }
 });
@@ -65,15 +65,17 @@ const classRoomUpdate = asyncHandler(async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(401).json({
-      error: 'Something error, can not get  data',
+      error: "Something error, can not get  data",
     });
   }
 });
 
 const getClassRoomTeacher = asyncHandler(async (req, res) => {
   try {
-    const classRoom = await ClassRoom.find({assignedTeacher:{ $all: [req.params.email]}});
-    console.log(classRoom,req.params.email)
+    const classRoom = await ClassRoom.find({
+      assignedTeacher: { $all: [req.params.email] },
+    });
+    console.log(classRoom, req.params.email);
     res.status(201).json({
       success: true,
       data: classRoom,
@@ -88,8 +90,10 @@ const getClassRoomTeacher = asyncHandler(async (req, res) => {
 
 const getClassRoomStudent = asyncHandler(async (req, res) => {
   try {
-    const classRoom = await ClassRoom.find({accessedStudent:{ $all: [req.params.email]}});
-    console.log(classRoom,req.params.email)
+    const classRoom = await ClassRoom.find({
+      accessedStudent: { $all: [req.params.email] },
+    });
+    console.log(classRoom, req.params.email);
     res.status(201).json({
       success: true,
       data: classRoom,
@@ -120,10 +124,29 @@ const getSingleclassRoom = asyncHandler(async (req, res) => {
     res.status(200).json(getSingleclassRoomData);
   } catch (error) {
     res.status(500).json({
-      message: 'Failed Getting Single classRoom',
+      message: "Failed Getting Single classRoom",
     });
   }
 });
 
-module.exports = { getSingleclassRoom,createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate };
+// get single classroom by id
+const getSingleClassRoomById = asyncHandler(async (req, res) => {
+  try {
+    const singleClasssRoom = await ClassRoom.findById(req.params.classRoomId);
+    res.status(200).json(singleClasssRoom);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed Getting Single Classroom by id",
+    });
+  }
+});
 
+module.exports = {
+  getSingleclassRoom,
+  createClassRoom,
+  getAllClassRoom,
+  getClassRoomTeacher,
+  getClassRoomStudent,
+  classRoomUpdate,
+  getSingleClassRoomById,
+};
