@@ -6,8 +6,7 @@ const {
   getClassRoomTeacher,
   getClassRoomStudent,
   classRoomUpdate,
-  getSingleclassRoom,
-  getSingleClassRoomById,
+  getSingleClassroom,
 } = require("../controllers/classRoomController");
 
 const router = express.Router();
@@ -16,7 +15,6 @@ router.route("/").post(createClassRoom).get(getAllClassRoom);
 router.route("/teacher/:email").get(getClassRoomTeacher);
 router.route("/student/:email").get(getClassRoomStudent);
 router.route("/:classRoomId").put(classRoomUpdate);
-router.route("/:classRoomId").get(getSingleClassRoomById);
-router.route("/student/:classRoomemail").get(getSingleclassRoom);
+router.route("/single/:classRoomId").get(getSingleClassroom);
 
 module.exports = router;
