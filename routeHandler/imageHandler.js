@@ -29,13 +29,13 @@
 // });
 
 // module.exports = router;
-const AWS = require("aws-sdk");
-const express = require("express");
-const mongoose = require("mongoose");
+const AWS = require('aws-sdk');
+const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 
-const config = require("../config/config");
-const Image = require("../schemas/imageScema");
+const config = require('../config/config');
+const Image = require('../schemas/imageScema');
 
 const spaces = new AWS.S3({
   endpoint: new AWS.Endpoint(config.spaces.url),
@@ -48,12 +48,13 @@ const spaces = new AWS.S3({
 //   console.log(req.files);
 //   res.send("Received");
 // });
-router.post("/images", async (req, res) => {
+router.post('/images', async (req, res) => {
+  console.log(req.files);
   const { file } = req.files;
   try {
     const test = await spaces
       .putObject({
-        ACL: "public-read",
+        ACL: 'public-read',
         Bucket: config.spaces.spaceName,
         Body: file.data,
         Key: file.name,
