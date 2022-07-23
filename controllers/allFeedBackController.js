@@ -3,13 +3,13 @@ const asyncHandler = require("express-async-handler");
 const Feedback = require("../schemas/allFeedbackSchema");
 const userSchema = require("../schemas/userSchema");
 const User = new mongoose.model("User", userSchema);
-// pust
+// put
 const classRoomFeedbackSection = asyncHandler(async (req, res) => {
   try {
     var classRoomFeedbackData = {
       ...req?.body?.classroomFeedBack,
     };
-
+    console.log(req.body, "hello");
     const data = await Feedback.find({});
     const updateData = {
       $set: {
@@ -21,7 +21,7 @@ const classRoomFeedbackSection = asyncHandler(async (req, res) => {
     };
 
     const result = await Feedback.updateOne(updateData);
-    console.log(data[0]?.classroomFeedBack);
+    // console.log(data[0]?.classroomFeedBack);
     res.status(201).json({
       success: true,
       data: result,
