@@ -188,6 +188,22 @@ const deleteClassNote = asyncHandler(async (req, res) => {
   }
 });
 
+const getAccessedStudents = asyncHandler(async (req, res) => {
+  try {
+    const classRoom = await ClassRoom.find({_id: req.params.classRoomId}).select('accessedStudent');
 
-module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate,getSingleClassroom, pushClassNote,getClassNote,deleteClassNote };
+    res.status(201).json({
+      success: true,
+      data: classRoom,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "OPPS ! can't get user data, please contact with author",
+    });
+  }
+});
+
+
+module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate,getSingleClassroom, pushClassNote,getClassNote,deleteClassNote , getAccessedStudents};
 

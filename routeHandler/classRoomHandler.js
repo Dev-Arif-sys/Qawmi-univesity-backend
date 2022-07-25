@@ -10,6 +10,7 @@ const {
   pushClassNote,
   getClassNote,
   deleteClassNote,
+  getAccessedStudents,
 } = require("../controllers/classRoomController");
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.route("/:classRoomId").put(classRoomUpdate);
 router.route("/single/:classRoomId").get(getSingleClassroom);
 router.route("/classNote/:classRoomId").put(pushClassNote).get(getClassNote);
 router.route('/classNote/:id').put(deleteClassNote)
+router.route('/accessedStudent/:classRoomId').get(getAccessedStudents)
 
 module.exports = router;
