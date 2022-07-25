@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const fileUpload = require('express-fileupload');
 /* import handler */
+<<<<<<< HEAD
+
+=======
+>>>>>>> 895fdbb1e60688dd31337229dd7ba0d2e1394d4c
 const userHandler = require('./routeHandler/userHandler');
 const courseHandler = require('./routeHandler/courseHandler');
 const bookHandler = require('./routeHandler/bookHandler');
@@ -31,6 +35,10 @@ const studentClassGuideHandler = require('./routeHandler/studentClassGuideHandle
 const teacherNoteUploadHandler = require('./routeHandler/teacherNoteHandler');
 
 const imageHandler = require('./routeHandler/imageHandler');
+<<<<<<< HEAD
+
+=======
+>>>>>>> 895fdbb1e60688dd31337229dd7ba0d2e1394d4c
 /* DB connection and middleware and cors */
 const connectDB = require('./config/db');
 const app = express();
@@ -71,6 +79,12 @@ app.use('/banner', bannerHandler);
 app.use('/bannertwo', bannerTwoHandler);
 
 app.use('/api/bkash-payment', bkashPaymentRoutes);
+<<<<<<< HEAD
+
+app.use('/pricing', pricingAddHandler);
+app.use('/feedback', feedBackHandler);
+app.use('/mail', sendMailHandler);
+=======
 app.use("/course", courseHandler);
 app.use("/book", bookHandler);
 app.use("/classRoom", classRoomHandler);
@@ -89,6 +103,7 @@ app.use("/quiz", quizHandler);
 app.use("/pricing", pricingAddHandler);
 app.use("/feedback", feedBackHandler);
 app.use("/mail", sendMailHandler);
+>>>>>>> 895fdbb1e60688dd31337229dd7ba0d2e1394d4c
 // app.use("/img", imageHandler);
 // app.use(require("./routeHandler/imageHandler"));
 app.use(studentClassGuideHandler);

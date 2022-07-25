@@ -2,11 +2,19 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const bannerEngSchema = mongoose.Schema({
+  subheading: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
   },
-  SubTitle: {
+  text: {
+    type: String,
+    required: true,
+  },
+  list: {
     type: String,
     required: true,
   },
@@ -17,11 +25,19 @@ const bannerEngSchema = mongoose.Schema({
 });
 
 const bannerBngSchema = mongoose.Schema({
+  subheading: {
+    type: String,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
   },
-  SubTitle: {
+  text: {
+    type: String,
+    required: true,
+  },
+  list: {
     type: String,
     required: true,
   },

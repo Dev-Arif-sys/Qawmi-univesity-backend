@@ -10,5 +10,5 @@ const router = express.Router();
 
 router.route('/').post(createbook).get(getAllbook);
 router.route('/:id').get(getSingleBook);
-router.route('/:id').get(getSingleBookDelete);
+router.route('/delete/:id').delete(getSingleBookDelete);
 module.exports = router;
