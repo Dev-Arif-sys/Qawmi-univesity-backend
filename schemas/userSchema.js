@@ -100,6 +100,7 @@ const userSchema = mongoose.Schema({
       classRoomId: String
     },
   ],
+  feedback:Array
 });
 
 userSchema.methods.getResetPasswordToken = () => {

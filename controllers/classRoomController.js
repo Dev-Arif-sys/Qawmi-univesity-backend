@@ -125,11 +125,85 @@ const getClassRoomStudent = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = {
-  createClassRoom,
-  getAllClassRoom,
-  getClassRoomTeacher,
-  getClassRoomStudent,
-  classRoomUpdate,
-  getSingleClassroom,
-};
+
+/* ::::::::::::::::::::::::::::::::::::::
+Push class note
+:::::::::::::::::::::::::::::::::::::::::*/
+const pushClassNote = asyncHandler(async (req, res) => {
+  try {
+    var newData = {
+      title: req.body.title,
+      note: req.body.note,
+      date: req.body.date
+    };
+    const data = await ClassRoom.findOne({ _id: req.params.classRoomId });
+    data?.classNote?.push(newData);
+    data?.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
+const getClassNote=asyncHandler(async (req, res) => {
+  try {
+    const data = await ClassRoom.findOne({ _id: req.params.classRoomId }).select('classNote');
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: 'Something error, can not get  data',
+    });
+  }
+});
+/* delete note*/
+const deleteClassNote = asyncHandler(async (req, res) => {
+  try {
+    // const data = await ClassRoom.deleteOne({ _id: req.params.id });
+
+    const data = await ClassRoom.update( 
+      { "_id" : req.body.classRoomId} , 
+      { "$pull" : { "classNote" : { "_id" : req.params.id } } } , 
+      { "multi" : true }  
+     )
+     console.log(data)
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
+const getAccessedStudents = asyncHandler(async (req, res) => {
+  try {
+    const classRoom = await ClassRoom.find({_id: req.params.classRoomId}).select('accessedStudent');
+
+    res.status(201).json({
+      success: true,
+      data: classRoom,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "OPPS ! can't get user data, please contact with author",
+    });
+  }
+});
+
+
+module.exports = { createClassRoom, getAllClassRoom, getClassRoomTeacher,getClassRoomStudent,classRoomUpdate,getSingleClassroom, pushClassNote,getClassNote,deleteClassNote , getAccessedStudents};
+

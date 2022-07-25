@@ -484,6 +484,26 @@ const getSingleUserQuestionMarks = asyncHandler(async (req, res) => {
   }
 });
 
+
+/* push feedback */
+const pushFeedback = asyncHandler(async (req, res) => {
+  try {
+    const data = await User.findOne({ email: req.params.email });
+    data.feedback.push({...req.body});
+    data.save();
+
+    res.status(201).json({
+      success: true,
+      data: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: "Something error, can not get user data",
+    });
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -501,4 +521,5 @@ module.exports = {
   getSingleUserQuiz,
   pushQuestionMarks,
   getSingleUserQuestionMarks,
+  pushFeedback
 };
