@@ -42,16 +42,24 @@ const bookSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  tags: {
-    type: Array,
-    required: [true, 'Please provide Tag of the book'],
-  },
+  // tags: {
+  //   type: Array,
+  //   required: [true, 'Please provide Tag of the book'],
+  // },
 
   author: {
     type: Array,
     required: [true, 'Please provide Tag of the book'],
   },
-  image: {
+  image1: {
+    type: String,
+    required: true,
+  },
+  image2: {
+    type: String,
+    required: true,
+  },
+  image3: {
     type: String,
     required: true,
   },

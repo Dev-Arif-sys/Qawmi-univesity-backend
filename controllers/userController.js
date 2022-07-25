@@ -256,10 +256,11 @@ const getSingleUserInfo = asyncHandler(async (req, res) => {
 
 const getManyByFilter = asyncHandler(async (req, res) => {
   try {
-    console.log(req.body);
+    console.log(req.body.emails);
     const users = await User.find({ email: { $in: req.body.emails } }).select(
       "name email number role"
     );
+    console.log(users)
 
     res.status(201).json({
       success: true,
