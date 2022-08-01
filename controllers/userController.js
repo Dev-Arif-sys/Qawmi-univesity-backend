@@ -60,8 +60,6 @@ const loginUser = asyncHandler(async (req, res) => {
       user[0].password
     );
     console.log(user);
-  
-    
 
     res.status(200).json({
       name: user[0].name,
@@ -180,13 +178,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
 /****** Update user ********/
-
-
 
 const updateUser = asyncHandler(async (req, res) => {
   try {
@@ -196,7 +188,7 @@ const updateUser = asyncHandler(async (req, res) => {
         error: "You are not a valid user",
       });
     }
-    console.log(req.body)
+    console.log(req.body);
 
     const updatedInfo = {
       $set: {
@@ -204,7 +196,15 @@ const updateUser = asyncHandler(async (req, res) => {
           [{ courseId: req.body.courseId }, ...user[0]?.Course] ||
           user[0]?.Course,
         quizMarks:
-          [{ quizMark:req.body.quizMark, totalMark:req.body.totalMark,quizSubmittedDate:req.body.quizSubmittedDate,quizId:req.body.quizId},...user[0]?.quizMarks]|| user[0]?.quizMarks,
+          [
+            {
+              quizMark: req.body.quizMark,
+              totalMark: req.body.totalMark,
+              quizSubmittedDate: req.body.quizSubmittedDate,
+              quizId: req.body.quizId,
+            },
+            ...user[0]?.quizMarks,
+          ] || user[0]?.quizMarks,
         ...req.body,
       },
     };
@@ -382,7 +382,7 @@ const pushQuizMarks = asyncHandler(async (req, res) => {
       quizMark: req.body.quizMark,
       totalMark: req.body.totalMark,
       quizSubmittedDate: req.body.quizSubmittedDate,
-      quizId: req.body.quizId
+      quizId: req.body.quizId,
     };
 
     const data = await User.findOne({ email: req.params.email });
@@ -406,7 +406,9 @@ Get only single user's assignment field
 :::::::::::::::::::::::::::::::::::::::::*/
 const getSingleUserQuiz = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.params.email }).select("quizMarks");
+    const user = await User.findOne({ email: req.params.email }).select(
+      "quizMarks"
+    );
     if (!user) {
       res.status(401).json({
         error: "Database has no assignment marks",
@@ -436,7 +438,7 @@ const pushQuestionMarks = asyncHandler(async (req, res) => {
       totalMark: req.body.totalMark,
       questionSubmittedDate: req.body.questionSubmittedDate,
       questionId: req.body.questionId,
-      classRoomId: req.body.classRoomId
+      classRoomId: req.body.classRoomId,
     };
 
     const data = await User.findOne({ email: req.params.email });
@@ -460,7 +462,9 @@ Get only single user's quiz field
 :::::::::::::::::::::::::::::::::::::::::*/
 const getSingleUserQuestionMarks = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.params.email }).select("questionMarks");
+    const user = await User.findOne({ email: req.params.email }).select(
+      "questionMarks"
+    );
     if (!user) {
       res.status(401).json({
         error: "Database has no assignment marks",
