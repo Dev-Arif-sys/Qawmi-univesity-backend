@@ -60,8 +60,6 @@ const loginUser = asyncHandler(async (req, res) => {
       user[0].password
     );
     console.log(user);
-  
-    
 
     res.status(200).json({
       name: user[0].name,
@@ -180,13 +178,7 @@ const resetPassword = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
 /****** Update user ********/
-
-
 
 const updateUser = asyncHandler(async (req, res) => {
   try {
@@ -196,16 +188,27 @@ const updateUser = asyncHandler(async (req, res) => {
         error: "You are not a valid user",
       });
     }
-    const updateBlock={}
+    const updateBlock = {};
 
-    if(req.body.courseId){
-      updateBlock["Course"]= [{ courseId: req.body.courseId }, ...user[0]?.Course]
+    if (req.body.courseId) {
+      updateBlock["Course"] = [
+        { courseId: req.body.courseId },
+        ...user[0]?.Course,
+      ];
     }
 
-    if(req.body.quizMark && req.body.totalMark){
-      updateBlock["quizMarks"]= [{ quizMark:req.body.quizMark, totalMark:req.body.totalMark,quizSubmittedDate:req.body.quizSubmittedDate,quizId:req.body.quizId},...user[0]?.quizMarks]
+    if (req.body.quizMark && req.body.totalMark) {
+      updateBlock["quizMarks"] = [
+        {
+          quizMark: req.body.quizMark,
+          totalMark: req.body.totalMark,
+          quizSubmittedDate: req.body.quizSubmittedDate,
+          quizId: req.body.quizId,
+        },
+        ...user[0]?.quizMarks,
+      ];
     }
-    console.log(req.body)
+    console.log(req.body);
 
     const updatedInfo = {
       $set: {
@@ -260,7 +263,7 @@ const getManyByFilter = asyncHandler(async (req, res) => {
     const users = await User.find({ email: { $in: req.body.emails } }).select(
       "name email number role"
     );
-    console.log(users)
+    console.log(users);
 
     res.status(201).json({
       success: true,
@@ -388,7 +391,7 @@ const pushQuizMarks = asyncHandler(async (req, res) => {
       quizMark: req.body.quizMark,
       totalMark: req.body.totalMark,
       quizSubmittedDate: req.body.quizSubmittedDate,
-      quizId: req.body.quizId
+      quizId: req.body.quizId,
     };
 
     const data = await User.findOne({ email: req.params.email });
@@ -412,7 +415,9 @@ Get only single user's assignment field
 :::::::::::::::::::::::::::::::::::::::::*/
 const getSingleUserQuiz = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.params.email }).select("quizMarks");
+    const user = await User.findOne({ email: req.params.email }).select(
+      "quizMarks"
+    );
     if (!user) {
       res.status(401).json({
         error: "Database has no assignment marks",
@@ -442,7 +447,7 @@ const pushQuestionMarks = asyncHandler(async (req, res) => {
       totalMark: req.body.totalMark,
       questionSubmittedDate: req.body.questionSubmittedDate,
       questionId: req.body.questionId,
-      classRoomId: req.body.classRoomId
+      classRoomId: req.body.classRoomId,
     };
 
     const data = await User.findOne({ email: req.params.email });
@@ -466,7 +471,9 @@ Get only single user's quiz field
 :::::::::::::::::::::::::::::::::::::::::*/
 const getSingleUserQuestionMarks = asyncHandler(async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.params.email }).select("questionMarks");
+    const user = await User.findOne({ email: req.params.email }).select(
+      "questionMarks"
+    );
     if (!user) {
       res.status(401).json({
         error: "Database has no assignment marks",
@@ -484,12 +491,11 @@ const getSingleUserQuestionMarks = asyncHandler(async (req, res) => {
   }
 });
 
-
 /* push feedback */
 const pushFeedback = asyncHandler(async (req, res) => {
   try {
     const data = await User.findOne({ email: req.params.email });
-    data.feedback.push({...req.body});
+    data.feedback.push({ ...req.body });
     data.save();
 
     res.status(201).json({
@@ -521,5 +527,5 @@ module.exports = {
   getSingleUserQuiz,
   pushQuestionMarks,
   getSingleUserQuestionMarks,
-  pushFeedback
+  pushFeedback,
 };
