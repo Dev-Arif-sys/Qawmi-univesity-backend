@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const bookSchema = require('../schemas/bookSchema');
 const mongoose = require('mongoose');
 const Book = new mongoose.model('Book', bookSchema);
-
+const ObjectId = require('mongodb').ObjectId;
 const createbook = asyncHandler(async (req, res) => {
   try {
     const newbook = await Book.create({
@@ -38,5 +38,43 @@ const getAllbook = asyncHandler(async (req, res) => {
     });
   }
 });
+const getSingleBook = asyncHandler(async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    const query = { _id: ObjectId(id) };
 
-module.exports = { createbook, getAllbook };
+    const book = await Book.findOne(query);
+
+    res.status(201).json({
+      success: true,
+      data: book,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: 'Something error, can not get user data',
+    });
+  }
+});
+const getSingleBookDelete = asyncHandler(async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    const query = { _id: ObjectId(id) };
+
+    const BookDelete = await Book.deleteOne(query);
+
+    res.status(201).json({
+      success: true,
+      data: BookDelete,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(401).json({
+      error: 'Something error, can not get user data',
+    });
+  }
+});
+
+module.exports = { createbook, getAllbook, getSingleBook, getSingleBookDelete };

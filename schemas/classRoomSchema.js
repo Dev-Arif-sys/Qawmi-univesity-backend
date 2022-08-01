@@ -25,6 +25,13 @@ const classRoomSchema = mongoose.Schema({
      
     },
   ],
+  classNote: [
+    {
+      title: String,
+      note: String,
+      date: String
+    }
+  ]
   // video: {
   //   type: Array,
   //   required: [true, 'Please provide Tag of the book'],
